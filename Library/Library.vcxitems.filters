@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Filter.cpp">
+      <Filter>FIlter</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)FilterFactory.cpp">
+      <Filter>FilterFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)MedianFilter.cpp">
+      <Filter>MedianFilter</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Picture.cpp">
+      <Filter>Picture</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)WeightedMedianFilter.cpp">
+      <Filter>WeightedMedianFilter</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)SobelFilter.cpp">
+      <Filter>SobelFilter</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)MinusMedianFilter.cpp">
+      <Filter>MinusMedianFilter</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Filter.h">
+      <Filter>FIlter</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)FilterFactory.h">
+      <Filter>FilterFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Picture.h">
+      <Filter>Picture</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)WeightedMedianFilter.h">
+      <Filter>WeightedMedianFilter</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)SobelFilter.h">
+      <Filter>SobelFilter</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MinusMedianFilter.h">
+      <Filter>MinusMedianFilter</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MedianFilter.h">
+      <Filter>MinusMedianFilter</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="FIlter">
+      <UniqueIdentifier>{d7ccbc04-c6ca-4b8a-ac79-a85c277b1789}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FilterFactory">
+      <UniqueIdentifier>{8b2d2bbe-8223-45ed-ac0d-84a22fc1e5c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MedianFilter">
+      <UniqueIdentifier>{72e269fe-be65-4bb1-8ad7-410c46f8fb22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Picture">
+      <UniqueIdentifier>{6191e635-32df-46d3-9db0-d5a4ebc40fb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WeightedMedianFilter">
+      <UniqueIdentifier>{c790169b-eb08-4128-a9eb-4f89321b0600}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SobelFilter">
+      <UniqueIdentifier>{42dbab2f-d542-4c2d-9f3d-710fa01bd65c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MinusMedianFilter">
+      <UniqueIdentifier>{603e22cb-9ae6-424f-901e-d1cdb3b8f819}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

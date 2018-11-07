@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{45d41acc-2c3c-43d2-bc10-02aa73ffc7c7}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Filter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)FilterFactory.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MedianFilter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MinusMedianFilter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Picture.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)SobelFilter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)WeightedMedianFilter.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Filter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)FilterFactory.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MedianFilter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MinusMedianFilter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Picture.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)SobelFilter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)WeightedMedianFilter.cpp" />
+  </ItemGroup>
+</Project>
