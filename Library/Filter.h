@@ -9,11 +9,10 @@ protected:
 public:
 	Filter();
 	~Filter();
-	void apply();
+	virtual void apply();
 	void set_image(string);
 	void set_image(Mat);
 	Picture* get_base_image();
 	Picture* get_result_image();
-	virtual void reset() const = 0;
 };
 

@@ -5,7 +5,10 @@
 Filter::Filter() : base(nullptr), result(nullptr) {};
 
 
-Filter::~Filter() {};
+Filter::~Filter()
+{
+	delete base, result;
+};
 
 void Filter::apply()
 {

@@ -4,14 +4,15 @@ class MedianFilter :
 	public Filter
 {
 private:
-	int msize;
-	int mask[3][3];
+	int msize, substractor;
+	int** mask;
 	void bucle(uchar*&, uchar*&, uint, uint) override;
 	void make_mask();
 public:
 	MedianFilter();
 	~MedianFilter();
-	void reset() const override;
+	void apply() override;
+	void reset();
 	void modify(int);
 };
 
