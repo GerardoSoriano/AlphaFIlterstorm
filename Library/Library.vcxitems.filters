@@ -22,6 +22,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)MinusMedianFilter.cpp">
       <Filter>MinusMedianFilter</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)AverageFilter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Filter.h">
@@ -43,8 +44,9 @@
       <Filter>MinusMedianFilter</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)MedianFilter.h">
-      <Filter>MinusMedianFilter</Filter>
+      <Filter>MedianFilter</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)AverageFilter.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="FIlter">
@@ -67,6 +69,9 @@
     </Filter>
     <Filter Include="MinusMedianFilter">
       <UniqueIdentifier>{603e22cb-9ae6-424f-901e-d1cdb3b8f819}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AverageFilter">
+      <UniqueIdentifier>{40373944-30ef-4d47-95f0-b185d6fc67f6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

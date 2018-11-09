@@ -14,6 +14,7 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)AverageFilter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Filter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)FilterFactory.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MedianFilter.h" />
@@ -23,6 +24,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)WeightedMedianFilter.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)AverageFilter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Filter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)FilterFactory.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MedianFilter.cpp" />

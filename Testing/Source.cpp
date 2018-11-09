@@ -3,18 +3,21 @@
 #include "Picture.h"
 #include "FilterFactory.h"
 #include "MedianFilter.h"
+#include "WeightedMedianFilter.h"
+#include "MinusMedianFilter.h"
+#include "AverageFilter.h"
 using namespace std;
 using namespace cv;
 
 int main()
 {
-	Picture *pic = new Picture(R"(C:\Users\gerar\OneDrive\Imágenes\Dexter1.jpg)");
+	Picture *pic = new Picture(R"(C:\Users\gerar\OneDrive\Imágenes\kidface.jpg)");
 	if (pic->image.empty())
 	{
 		cout << "No se pudo abrir la imagen chavo" << endl;
 		return -1;
 	}
-	FilterFactory *ff = new FilterFactory(_Median);
+	FilterFactory *ff = new FilterFactory(_Average);
 	Filter *f = ff->createFilter();
 	f->set_image(pic->image);
 	f->apply();
@@ -29,7 +32,7 @@ int main()
 	namedWindow("Test02");
 	imshow("Test02", result->image);
 
-	dynamic_cast<MedianFilter*>(f)->modify(10);
+	dynamic_cast<AverageFilter*>(f)->modify(10);
 	f->apply();
 	result = f->get_result_image();
 

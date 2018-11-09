@@ -9,6 +9,6 @@ private:
 public:
 	SobelFilter();
 	~SobelFilter();
-	void reset() const override;
+	void reset() const;
 	void modify() const;
 };

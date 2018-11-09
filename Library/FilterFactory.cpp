@@ -3,6 +3,7 @@
 #include "SobelFilter.h"
 #include "WeightedMedianFilter.h"
 #include "MinusMedianFilter.h"
+#include "AverageFilter.h"
 
 
 FilterFactory::FilterFactory(FilterList _choise) : choise(_choise) {};
@@ -22,6 +23,8 @@ Filter* FilterFactory::createFilter() const
 		return new WeightedMedianFilter();
 	case _MinusMedian:
 		return new MinusMedianFilter();
+	case _Average:
+		return new AverageFilter();
 	case _Sobel:
 		return new SobelFilter();
 	default:

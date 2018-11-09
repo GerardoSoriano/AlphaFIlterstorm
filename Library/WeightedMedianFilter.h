@@ -4,13 +4,15 @@ class WeightedMedianFilter :
 	public Filter
 {
 private:
-	int mask[3][3];
-	float weight;
+	int msize, weight, substractor;
+	int** mask;
 	void bucle(uchar*&, uchar*&, uint, uint) override;
+	void make_mask();
 public:
 	WeightedMedianFilter();
 	~WeightedMedianFilter();
-	void reset() const override;
-	void modify() const;
+	void apply() override;
+	void reset();
+	void modify(int _msize, int _weight);
 };
 
