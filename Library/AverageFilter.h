@@ -4,17 +4,16 @@ class AverageFilter :
 	public Filter
 {
 private:
-	int msize, substractor;
+	int msize;
 	int **arr_b, **arr_g, **arr_r;
 	void bucle(uchar*&, uchar*&, uint, uint) override;
 	void make_mask();
-	int min_element(int[], int);
-	void swap(int&, int&);
-	void sort(int*, int);
+	static int min_element(int[], int);
+	static void swap(int&, int&) noexcept;
+	static void sort(int*, int);
 public:
 	AverageFilter();
 	~AverageFilter();
-	void apply() override;
 	void reset();
 	void modify(int);
 };

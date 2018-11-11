@@ -1,17 +1,17 @@
 #pragma once
 #include "Filter.h"
-class WeightedMedianFilter :
+class MinusLaplacianFilter :
 	public Filter
 {
 private:
-	int msize, weight;
-	int** mask;
+	int weight;
+	int mask[3][3];
 	void bucle(uchar*&, uchar*&, uint, uint) override;
 	void make_mask();
 public:
-	WeightedMedianFilter();
-	~WeightedMedianFilter();
+	MinusLaplacianFilter();
+	~MinusLaplacianFilter();
 	void reset();
-	void modify(int _msize, int _weight);
+	void modify(int);
 };
 

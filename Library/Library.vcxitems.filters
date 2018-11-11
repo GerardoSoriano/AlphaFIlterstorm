@@ -22,7 +22,28 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)MinusMedianFilter.cpp">
       <Filter>MinusMedianFilter</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)AverageFilter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)AverageFilter.cpp">
+      <Filter>AverageFilter</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)LaplacianFilter.cpp">
+      <Filter>LaplacianFilter</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)MinusLaplacianFilter.cpp">
+      <Filter>MinusLaplacianFilter</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)DirectionalNorthFilter.cpp">
+      <Filter>DirectionalNorthFilter</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)DirectionalEastFilter.cpp">
+      <Filter>DirectionalEastFilter</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GrayscaleLuminosityFilter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)GrayscaleAverageFilter.cpp">
+      <Filter>GrayscaleAverageFilter</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GrayscaleLuminanceFilter.cpp">
+      <Filter>GrayscaleLuminanceFilter</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Filter.h">
@@ -46,7 +67,28 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)MedianFilter.h">
       <Filter>MedianFilter</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)AverageFilter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)AverageFilter.h">
+      <Filter>AverageFilter</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)LaplacianFilter.h">
+      <Filter>LaplacianFilter</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MinusLaplacianFilter.h">
+      <Filter>MinusLaplacianFilter</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)DirectionalNorthFilter.h">
+      <Filter>DirectionalNorthFilter</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)DirectionalEastFilter.h">
+      <Filter>DirectionalEastFilter</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GrayscaleLuminosityFilter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)GrayscaleAverageFilter.h">
+      <Filter>GrayscaleAverageFilter</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GrayscaleLuminanceFilter.h">
+      <Filter>GrayscaleLuminanceFilter</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="FIlter">
@@ -72,6 +114,24 @@
     </Filter>
     <Filter Include="AverageFilter">
       <UniqueIdentifier>{40373944-30ef-4d47-95f0-b185d6fc67f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LaplacianFilter">
+      <UniqueIdentifier>{068648f2-e6bb-43ed-bfbc-d60da75c5a06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MinusLaplacianFilter">
+      <UniqueIdentifier>{fde6657e-39b1-4b89-bc44-340162a12d0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DirectionalEastFilter">
+      <UniqueIdentifier>{f5f9a57f-3d6a-412c-9531-4c2446969ea5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DirectionalNorthFilter">
+      <UniqueIdentifier>{55f16cc9-56e6-4de2-89f3-ed16226dfc33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GrayscaleAverageFilter">
+      <UniqueIdentifier>{c0b901f1-2e90-4bd4-8517-d800d1a97f9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GrayscaleLuminanceFilter">
+      <UniqueIdentifier>{1f193ec1-404a-4622-b576-498c0b36aa6d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

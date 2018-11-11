@@ -1,17 +1,17 @@
 #pragma once
 #include "Filter.h"
-class WeightedMedianFilter :
+class DirectionalNorthFilter :
 	public Filter
 {
 private:
 	int msize, weight;
-	int** mask;
+	int **mask;
 	void bucle(uchar*&, uchar*&, uint, uint) override;
 	void make_mask();
 public:
-	WeightedMedianFilter();
-	~WeightedMedianFilter();
+	DirectionalNorthFilter();
+	~DirectionalNorthFilter();
 	void reset();
-	void modify(int _msize, int _weight);
+	void modify(int, int);
 };
 

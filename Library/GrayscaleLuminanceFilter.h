@@ -1,6 +1,6 @@
 #pragma once
 #include "Filter.h"
-class MedianFilter :
+class GrayscaleLuminanceFilter :
 	public Filter
 {
 private:
@@ -8,9 +8,12 @@ private:
 	int** mask;
 	void bucle(uchar*&, uchar*&, uint, uint) override;
 	void make_mask();
+	static int min_element(int[], int);
+	static void swap(int&, int&) noexcept;
+	static void sort(int*, int);
 public:
-	MedianFilter();
-	~MedianFilter();
+	GrayscaleLuminanceFilter();
+	~GrayscaleLuminanceFilter();
 	void reset();
 	void modify(int);
 };

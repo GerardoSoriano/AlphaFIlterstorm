@@ -6,6 +6,11 @@
 #include "WeightedMedianFilter.h"
 #include "MinusMedianFilter.h"
 #include "AverageFilter.h"
+#include "LaplacianFilter.h"
+#include "MinusLaplacianFilter.h"
+#include "DirectionalNorthFilter.h"
+#include "DirectionalEastFilter.h"
+#include "GrayscaleLuminanceFilter.h"
 using namespace std;
 using namespace cv;
 
@@ -17,7 +22,7 @@ int main()
 		cout << "No se pudo abrir la imagen chavo" << endl;
 		return -1;
 	}
-	FilterFactory *ff = new FilterFactory(_Average);
+	FilterFactory *ff = new FilterFactory(_GrayscaleLuminance);
 	Filter *f = ff->createFilter();
 	f->set_image(pic->image);
 	f->apply();
@@ -32,10 +37,10 @@ int main()
 	namedWindow("Test02");
 	imshow("Test02", result->image);
 
-	dynamic_cast<AverageFilter*>(f)->modify(10);
+	dynamic_cast<GrayscaleLuminanceFilter*>(f)->modify(5);
 	f->apply();
 	result = f->get_result_image();
-
+	
 	namedWindow("Test03");
 	imshow("Test03", result->image);
 

@@ -2,7 +2,7 @@
 
 
 
-Filter::Filter() : base(nullptr), result(nullptr) {};
+Filter::Filter() : base(nullptr), result(nullptr), substractor(1) {};
 
 
 Filter::~Filter()
@@ -12,13 +12,13 @@ Filter::~Filter()
 
 void Filter::apply()
 {
-	if(base != nullptr)
+	if (base != nullptr)
 	{
-		for (uint y = 1; y < (base->rows - 1); y++)
+		for (uint y = substractor; y < (base->rows - substractor); y++)
 		{
 			uchar *input = nullptr;
 			uchar *output = result->image.ptr<uchar>(y);
-			for (uint x = 1; x < (base->cols - 1); x++)
+			for (uint x = substractor; x < (base->cols - substractor); x++)
 			{
 				bucle(input, output, x, y);
 			}

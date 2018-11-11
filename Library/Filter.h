@@ -4,12 +4,13 @@
 class Filter
 {
 protected:
+	int substractor;
 	Picture *base, *result;
 	virtual void bucle(uchar*&, uchar*&, uint, uint) = 0;
 public:
 	Filter();
-	~Filter();
-	virtual void apply();
+	virtual ~Filter();
+	void apply();
 	void set_image(string);
 	void set_image(Mat);
 	Picture* get_base_image();

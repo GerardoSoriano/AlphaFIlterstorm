@@ -15,9 +15,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)AverageFilter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)DirectionalEastFilter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)DirectionalNorthFilter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Filter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)FilterFactory.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)GrayscaleAverageFilter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)GrayscaleLuminanceFilter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)GrayscaleLuminosityFilter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)LaplacianFilter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MedianFilter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MinusLaplacianFilter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MinusMedianFilter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Picture.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SobelFilter.h" />
@@ -25,9 +32,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)AverageFilter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)DirectionalEastFilter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)DirectionalNorthFilter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Filter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)FilterFactory.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)GrayscaleAverageFilter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)GrayscaleLuminanceFilter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)GrayscaleLuminosityFilter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)LaplacianFilter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MedianFilter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MinusLaplacianFilter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MinusMedianFilter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Picture.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SobelFilter.cpp" />

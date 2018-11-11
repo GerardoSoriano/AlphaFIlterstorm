@@ -1,17 +1,16 @@
 #pragma once
 #include "Filter.h"
-class MedianFilter :
+class LaplacianFilter :
 	public Filter
 {
 private:
-	int msize;
-	int** mask;
+	int weight;
+	int mask[3][3];
 	void bucle(uchar*&, uchar*&, uint, uint) override;
 	void make_mask();
 public:
-	MedianFilter();
-	~MedianFilter();
+	LaplacianFilter();
+	~LaplacianFilter();
 	void reset();
 	void modify(int);
 };
-

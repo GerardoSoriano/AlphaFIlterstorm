@@ -9,9 +9,11 @@ void AverageFilter::bucle(uchar*& _input, uchar*& _output, uint _x, uint _y)
 		{
 			_input = base->image.ptr<uchar>((_y - substractor) + i);
 
-			arr_b[j][i] = _input[((_x - substractor) + j) * 3];
-			arr_g[j][i] = _input[((_x - substractor) + j) * 3 + 1];
-			arr_r[j][i] = _input[((_x - substractor) + j) * 3 + 2];
+			const int px = (_x - substractor) + j;
+
+			arr_b[j][i] = _input[px * 3];
+			arr_g[j][i] = _input[px * 3 + 1];
+			arr_r[j][i] = _input[px * 3 + 2];
 		}
 	}
 
@@ -29,13 +31,13 @@ void AverageFilter::make_mask()
 	arr_b = new int*[msize];
 	arr_g = new int*[msize];
 	arr_r = new int*[msize];
+	substractor = msize / 2;
 	for (int i = 0; i < msize; ++i)
 	{
 		arr_b[i] = new int[msize];
 		arr_g[i] = new int[msize];
 		arr_r[i] = new int[msize];
 	}
-	substractor = msize / 2;
 }
 
 int AverageFilter::min_element(int a[], int i)
@@ -46,7 +48,7 @@ int AverageFilter::min_element(int a[], int i)
 	return j;
 }
 
-void AverageFilter::swap(int& x, int& y)
+void AverageFilter::swap(int& x, int& y) noexcept
 {
 	const int temp = x;
 	x = y;
@@ -61,30 +63,15 @@ void AverageFilter::sort(int* a, int sz)
 	sort(++a, sz - 1);
 }
 
-AverageFilter::AverageFilter(): Filter(), msize(3), substractor(msize / 2)
+AverageFilter::AverageFilter(): Filter(), msize(3)
 {
+	substractor = msize / 2;
 	make_mask();
 }
 
-
 AverageFilter::~AverageFilter()
 {
-}
-
-void AverageFilter::apply()
-{
-	if (base != nullptr)
-	{
-		for (uint y = substractor; y < (base->rows - substractor); y++)
-		{
-			uchar *input = nullptr;
-			uchar *output = result->image.ptr<uchar>(y);
-			for (uint x = substractor; x < (base->cols - substractor); x++)
-			{
-				bucle(input, output, x, y);
-			}
-		}
-	}
+	delete arr_b, arr_g, arr_r;
 }
 
 void AverageFilter::reset()

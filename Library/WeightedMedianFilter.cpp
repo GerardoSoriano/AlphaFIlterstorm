@@ -23,9 +23,9 @@ void WeightedMedianFilter::bucle(uchar*& _input, uchar*& _output, uint _x, uint 
 			}
 			else
 			{
-				const float b = _input[((_x - substractor) + j) * 3];;
-				const float g = _input[((_x - substractor) + j) * 3 + 1];
-				const float r = _input[((_x - substractor) + j) * 3 + 2];
+				const float b = _input[px * 3];;
+				const float g = _input[px * 3 + 1];
+				const float r = _input[px * 3 + 2];
 
 				sum_b = sum_b + (mask[j][i] * b);
 				sum_g = sum_g + (mask[j][i] * g);
@@ -60,6 +60,7 @@ void WeightedMedianFilter::bucle(uchar*& _input, uchar*& _output, uint _x, uint 
 void WeightedMedianFilter::make_mask()
 {
 	mask = new int*[msize];
+	substractor = msize / 2;
 	for (int i = 0; i < msize; ++i)
 		mask[i] = new int[msize];
 
@@ -68,12 +69,12 @@ void WeightedMedianFilter::make_mask()
 		{
 			mask[i][j] = 1;
 		}
-	substractor = msize / 2;
 	mask[substractor][substractor] = weight;
 }
 
-WeightedMedianFilter::WeightedMedianFilter(): Filter(), msize(3), weight(2), substractor(msize / 2)
+WeightedMedianFilter::WeightedMedianFilter(): Filter(), msize(3), weight(2)
 {
+	substractor = msize / 2;
 	make_mask();
 }
 
@@ -82,22 +83,6 @@ WeightedMedianFilter::~WeightedMedianFilter()
 	for (int i = 0; i < msize; ++i)
 		delete[] mask[i];
 	delete result, mask;
-}
-
-void WeightedMedianFilter::apply()
-{
-	if (base != nullptr)
-	{
-		for (uint y = substractor; y < (base->rows - substractor); y++)
-		{
-			uchar *input = nullptr;
-			uchar *output = result->image.ptr<uchar>(y);
-			for (uint x = substractor; x < (base->cols - substractor); x++)
-			{
-				bucle(input, output, x, y);
-			}
-		}
-	}
 }
 
 void WeightedMedianFilter::reset()
