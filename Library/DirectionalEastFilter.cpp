@@ -63,6 +63,11 @@ DirectionalEastFilter::~DirectionalEastFilter()
 	delete result, mask;
 }
 
+const wchar_t* DirectionalEastFilter::get_name()
+{
+	return TEXT("Filtro del direccional este");
+}
+
 void DirectionalEastFilter::reset()
 {
 	modify(3, 1);

@@ -1,18 +1,19 @@
 #pragma once
 #include "Filter.h"
-class MedianFilter :
+class GaussianFilter :
 	public Filter
 {
 private:
-	int msize;
-	int** mask;
+	int msize, sum_mask;
+	int **mask;
+	float sigma;
 	void bucle(uchar*&, uchar*&, uint, uint) override;
 	void make_mask();
 public:
-	MedianFilter();
-	~MedianFilter();
+	GaussianFilter();
+	~GaussianFilter();
 	const wchar_t* get_name() override;
 	void reset();
-	void modify(int);
+	void modify(int, float);
 };
 

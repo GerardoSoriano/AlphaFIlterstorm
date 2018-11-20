@@ -8,4 +8,5 @@ private:
 public:
 	GrayscaleLuminosityFilter();
 	~GrayscaleLuminosityFilter();
+	const wchar_t* get_name() override;
 };

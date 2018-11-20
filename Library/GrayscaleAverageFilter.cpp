@@ -26,3 +26,8 @@ GrayscaleAverageFilter::GrayscaleAverageFilter()
 GrayscaleAverageFilter::~GrayscaleAverageFilter()
 {
 }
+
+const wchar_t* GrayscaleAverageFilter::get_name()
+{
+	return TEXT("Filtro gris por promedio");
+}

@@ -52,6 +52,11 @@ MinusLaplacianFilter::~MinusLaplacianFilter()
 {
 }
 
+const wchar_t* MinusLaplacianFilter::get_name()
+{
+	return TEXT("Filtro menos laplaciano");
+}
+
 void MinusLaplacianFilter::reset()
 {
 	modify(1);

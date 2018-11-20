@@ -63,6 +63,11 @@ DirectionalNorthFilter::~DirectionalNorthFilter()
 	delete result, mask;
 }
 
+const wchar_t* DirectionalNorthFilter::get_name()
+{
+	return TEXT("Filtro del direccional norte");
+}
+
 void DirectionalNorthFilter::reset()
 {
 	modify(3, 1);

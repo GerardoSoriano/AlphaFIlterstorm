@@ -1,13 +1,13 @@
 #pragma once
 #include "Filter.h"
-class GrayscaleAverageFilter :
+class SepiaFilter :
 	public Filter
 {
 private:
 	void bucle(uchar*&, uchar*&, uint, uint) override;
 public:
-	GrayscaleAverageFilter();
-	~GrayscaleAverageFilter();
+	SepiaFilter();
+	~SepiaFilter();
 	const wchar_t* get_name() override;
 };
 

@@ -15,9 +15,11 @@ class Picture
 public:
 	Mat image;
 	int rows, cols;
+	int *b_colors, *g_colors, *r_colors;
 	Picture();
 	Picture(Mat _image);
 	Picture(string path);
+	void fill_array_colors();
 	void open();
 	void close();
 	void save();

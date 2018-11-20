@@ -11,6 +11,7 @@ private:
 public:
 	DirectionalEastFilter();
 	~DirectionalEastFilter();
+	const wchar_t* get_name() override;
 	void reset();
 	void modify(int, int);
 };

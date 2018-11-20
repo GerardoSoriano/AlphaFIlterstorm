@@ -8,7 +8,12 @@ Filter::Filter() : base(nullptr), result(nullptr), substractor(1) {};
 Filter::~Filter()
 {
 	delete base, result;
-};
+}
+const wchar_t * Filter::get_name()
+{
+	return nullptr;
+}
+;
 
 void Filter::apply()
 {

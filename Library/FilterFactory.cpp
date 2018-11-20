@@ -11,14 +11,29 @@
 #include "GrayscaleAverageFilter.h"
 #include "GrayscaleLuminosityFilter.h"
 #include "GrayscaleLuminanceFilter.h"
+#include "SepiaFilter.h"
+#include "GaussianFilter.h"
+#include "NormalizeHistogramFilter.h"
 
 
-FilterFactory::FilterFactory(FilterList _choise) : choise(_choise) {};
-
+FilterFactory::FilterFactory()
+{
+}
 
 FilterFactory::~FilterFactory()
 {
 }
+
+FilterFactory& FilterFactory::get_instance()
+{
+	static FilterFactory ff;
+	return ff;
+}
+
+void FilterFactory::change_choise(FilterList _choise)
+{
+	choise = _choise;
+};
 
 Filter* FilterFactory::createFilter() const
 {
@@ -46,8 +61,14 @@ Filter* FilterFactory::createFilter() const
 		return new GrayscaleLuminosityFilter();
 	case _GrayscaleLuminance:
 		return new GrayscaleLuminanceFilter();
+	case _Sepia:
+		return new SepiaFilter();
 	case _Sobel:
 		return new SobelFilter();
+	case _Gaussian:
+		return new GaussianFilter();
+	case _NormalizeHistogram:
+		return new NormalizeHistogramFilter();
 	default:
 		return nullptr;
 	}

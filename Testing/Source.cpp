@@ -11,6 +11,8 @@
 #include "DirectionalNorthFilter.h"
 #include "DirectionalEastFilter.h"
 #include "GrayscaleLuminanceFilter.h"
+#include "SobelFilter.h"
+#include "GaussianFilter.h"
 using namespace std;
 using namespace cv;
 
@@ -22,8 +24,9 @@ int main()
 		cout << "No se pudo abrir la imagen chavo" << endl;
 		return -1;
 	}
-	FilterFactory *ff = new FilterFactory(_GrayscaleLuminance);
-	Filter *f = ff->createFilter();
+	FilterFactory ff = FilterFactory::get_instance();
+	ff.change_choise(_Gaussian);
+	Filter *f = ff.createFilter();
 	f->set_image(pic->image);
 	f->apply();
 	Picture *base = f->get_base_image();
@@ -37,7 +40,7 @@ int main()
 	namedWindow("Test02");
 	imshow("Test02", result->image);
 
-	dynamic_cast<GrayscaleLuminanceFilter*>(f)->modify(5);
+	dynamic_cast<GaussianFilter*>(f)->modify(3, 1.5);
 	f->apply();
 	result = f->get_result_image();
 	

@@ -15,15 +15,19 @@ const enum FilterList{
 	_GrayscaleLuminance,
 	_Sepia,
 	_Sobel,
-	_Gaussian
+	_Gaussian,
+	_NormalizeHistogram
 };
 
 class FilterFactory
 {
-public:
+private:
 	FilterList choise;
-	FilterFactory(FilterList _choise);
+	FilterFactory();
+public:
 	~FilterFactory();
+	static FilterFactory& get_instance();
+	void change_choise(FilterList);
 	Filter* createFilter() const;
 };
 

@@ -85,6 +85,11 @@ MinusMedianFilter::~MinusMedianFilter()
 	delete result, mask;
 }
 
+const wchar_t* MinusMedianFilter::get_name()
+{
+	return TEXT("Filtro menos media");
+}
+
 void MinusMedianFilter::reset()
 {
 	modify(3);

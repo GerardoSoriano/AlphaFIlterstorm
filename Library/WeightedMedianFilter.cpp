@@ -85,6 +85,11 @@ WeightedMedianFilter::~WeightedMedianFilter()
 	delete result, mask;
 }
 
+const wchar_t* WeightedMedianFilter::get_name()
+{
+	return TEXT("Filtro de la media ponderada");
+}
+
 void WeightedMedianFilter::reset()
 {
 	modify(3, 2);

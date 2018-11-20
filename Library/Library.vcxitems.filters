@@ -37,13 +37,22 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)DirectionalEastFilter.cpp">
       <Filter>DirectionalEastFilter</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)GrayscaleLuminosityFilter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GrayscaleAverageFilter.cpp">
       <Filter>GrayscaleAverageFilter</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)GrayscaleLuminanceFilter.cpp">
       <Filter>GrayscaleLuminanceFilter</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GrayscaleLuminosityFilter.cpp">
+      <Filter>GrayscaleLuminosityFilter</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)SepiaFilter.cpp">
+      <Filter>SepiaFilter</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GaussianFilter.cpp">
+      <Filter>GaussianFilter</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)NormalizeHistogramFilter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Filter.h">
@@ -82,13 +91,22 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)DirectionalEastFilter.h">
       <Filter>DirectionalEastFilter</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)GrayscaleLuminosityFilter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GrayscaleAverageFilter.h">
       <Filter>GrayscaleAverageFilter</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)GrayscaleLuminanceFilter.h">
       <Filter>GrayscaleLuminanceFilter</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GrayscaleLuminosityFilter.h">
+      <Filter>GrayscaleLuminosityFilter</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)SepiaFilter.h">
+      <Filter>SepiaFilter</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GaussianFilter.h">
+      <Filter>GaussianFilter</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)NormalizeHistogramFilter.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="FIlter">
@@ -132,6 +150,15 @@
     </Filter>
     <Filter Include="GrayscaleLuminanceFilter">
       <UniqueIdentifier>{1f193ec1-404a-4622-b576-498c0b36aa6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GrayscaleLuminosityFilter">
+      <UniqueIdentifier>{599d5a4b-2e46-4727-8b23-c23c9d19e5c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SepiaFilter">
+      <UniqueIdentifier>{c7cb00ef-a02c-4873-8315-a3279f75539c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GaussianFilter">
+      <UniqueIdentifier>{00cb01d4-ae6c-4811-b27a-c55401589112}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

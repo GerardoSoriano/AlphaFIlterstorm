@@ -81,7 +81,12 @@ MedianFilter::~MedianFilter()
 {
 	for (int i = 0; i < msize; ++i)
 		delete[] mask[i];
-	delete result, mask;
+	delete mask;
+}
+
+const wchar_t* MedianFilter::get_name()
+{
+	return TEXT("Filtro de la media");
 }
 
 void MedianFilter::reset()

@@ -25,3 +25,8 @@ GrayscaleLuminosityFilter::GrayscaleLuminosityFilter()
 GrayscaleLuminosityFilter::~GrayscaleLuminosityFilter()
 {
 }
+
+const wchar_t* GrayscaleLuminosityFilter::get_name()
+{
+	return TEXT("Filtro gris por luminosidad");
+}

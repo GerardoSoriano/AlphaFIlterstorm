@@ -51,6 +51,11 @@ LaplacianFilter::~LaplacianFilter()
 {
 }
 
+const wchar_t* LaplacianFilter::get_name()
+{
+	return TEXT("Filtro laplaciano");
+}
+
 void LaplacianFilter::reset()
 {
 	modify(1);

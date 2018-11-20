@@ -74,6 +74,11 @@ AverageFilter::~AverageFilter()
 	delete arr_b, arr_g, arr_r;
 }
 
+const wchar_t* AverageFilter::get_name()
+{
+	return TEXT("Filtro por promedio");
+}
+
 void AverageFilter::reset()
 {
 	modify(3);

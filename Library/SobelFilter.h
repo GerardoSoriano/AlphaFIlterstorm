@@ -4,11 +4,14 @@ class SobelFilter :
 	public Filter
 {
 private:
-	int maskX[3][3], maskY[3][3];
+	int msize;
+	int **maskX, **maskY;
 	void bucle(uchar*&, uchar*&, uint, uint) override;
+	void make_mask();
 public:
 	SobelFilter();
 	~SobelFilter();
-	void reset() const;
-	void modify() const;
+	const wchar_t* get_name() override;
+	void reset();
+	void modify(int);
 };

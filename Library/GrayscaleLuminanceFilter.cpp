@@ -69,6 +69,11 @@ GrayscaleLuminanceFilter::~GrayscaleLuminanceFilter()
 	delete mask;
 }
 
+const wchar_t* GrayscaleLuminanceFilter::get_name()
+{
+	return TEXT("Filtro gris por luminancia");
+}
+
 void GrayscaleLuminanceFilter::reset()
 {
 	modify(3);
