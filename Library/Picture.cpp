@@ -5,13 +5,32 @@
 #include <iostream>
 using namespace std;
 
+Picture::Picture()
+{
+}
+
 Picture::Picture(Mat _image) : image(_image.clone()), rows(image.rows), cols(image.cols)
 {
+	hist_b = Histogram();
+	hist_b.create_histogram(image, CHANNEL_B);
+	hist_g = Histogram();
+	hist_g.create_histogram(image, CHANNEL_G);
+	hist_r = Histogram();
+	hist_r.create_histogram(image, CHANNEL_R);
 };
 
-Picture::Picture(string path) : image(imread(path)), rows(image.rows), cols(image.cols)
+Picture::Picture(string _path) : image(imread(_path)), rows(image.rows), cols(image.cols)
 {
-	//histB = Histogram(image, 0);
+	hist_b = Histogram();
+	hist_b.create_histogram(image, CHANNEL_B);
+	hist_g = Histogram();
+	hist_g.create_histogram(image, CHANNEL_G);
+	hist_r = Histogram();
+	hist_r.create_histogram(image, CHANNEL_R);
+}
+
+Picture::~Picture()
+{
 }
 
 Mat Picture::getHistogram(uint histSizeX, uint histSizeY, uint channel)

@@ -15,11 +15,12 @@ class Picture
 {
 public:
 	Mat image;
-	Histogram histB, histG, histR;
 	int rows, cols;
+	Histogram hist_b, hist_g, hist_r;
 	Picture();
 	Picture(Mat _image);
 	Picture(string path);
+	~Picture();
 	void open();
 	void close();
 	void save();

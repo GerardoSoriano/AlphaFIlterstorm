@@ -16,6 +16,12 @@ const enum FilterList{
 	_Sepia,
 	_Sobel,
 	_Gaussian,
+	_NormalizeHistogram,
+	_EqualizationHistogram,
+	_SimpleEqualizationHistogram,
+	_UniformEqualizationHistogram,
+	_ExponentialEqualizationHistogram,
+	_DisplacementHistogram,
 	_Umbral,
 	_Highlight
 };

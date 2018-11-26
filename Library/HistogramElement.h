@@ -1,14 +1,14 @@
 #pragma once
 class HistogramElement {
 public:
-	int value; //El valor que representa
-	int frequency; //La frecuencua en la que aparece este valor en el histograma
-	int cdf; //El acumulativo CDF
-
+	int value;
+	int frequency;
+	int cdf;
 	HistogramElement();
 	~HistogramElement();
-	//total_pixels es el total de los pixeles del histograma. Por ejemplo, en una imagen de 4x4, total_pixels debería ser 16
-	float getSdk(int totalPixels) {
-		return (float)(this->cdf) / (float)totalPixels;
-	}
+	float get_sdk(int) const;
+	bool operator < (const HistogramElement& str) const
+	{
+		return (frequency < str.frequency);
+	};
 };

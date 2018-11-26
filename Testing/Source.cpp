@@ -18,10 +18,6 @@ using namespace cv;
 
 int main()
 {
-	Mat pict = imread(R"(C:\Users\gerar\OneDrive\Imágenes\kidface.jpg)");
-	Histogram hist = Histogram();
-	hist.create_histogram(pict, 0);
-
 	Picture *pic = new Picture(R"(C:\Users\gerar\OneDrive\Imágenes\kidface.jpg)");
 	if (pic->image.empty())
 	{
@@ -29,20 +25,25 @@ int main()
 		return -1;
 	}
 	FilterFactory ff = FilterFactory::get_instance();
-	ff.change_choise(_Highlight);
+	ff.change_choise(_DisplacementHistogram);
 	Filter *f = ff.createFilter();
 	f->set_image(pic->image);
 	f->apply();
 	Picture *base = f->get_base_image();
 	Picture *result = f->get_result_image();
-
 	cout << "Tu imagen es de: " << pic->cols << " x " << pic->rows << endl;
 
 	namedWindow("Test01");
 	imshow("Test01", base->image);
 
+	namedWindow("HistTest1");
+	imshow("HistTest1", base->getHistogram(300, 300, CHANNEL_RGB));
+		
 	namedWindow("Test02");
 	imshow("Test02", result->image);
+
+	namedWindow("HistTest2");
+	imshow("HistTest2", result->getHistogram(300, 300, CHANNEL_RGB));
 
 	/*dynamic_cast<GaussianFilter*>(f)->modify(3, 1.5);
 	f->apply();

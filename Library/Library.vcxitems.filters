@@ -65,6 +65,11 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)HistogramElement.cpp">
       <Filter>HistogramElement</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)SimpleEqualizationHistogramFilter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)EqualizationHistogramFilter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)UniformEqualizationHistogramFilter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ExponentialEqualizationHistogramFilter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)DisplacementHistogramFilter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Filter.h">
@@ -131,6 +136,11 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)HistogramElement.h">
       <Filter>HistogramElement</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)SimpleEqualizationHistogramFilter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)EqualizationHistogramFilter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)UniformEqualizationHistogramFilter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ExponentialEqualizationHistogramFilter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)DisplacementHistogramFilter.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="FIlter">

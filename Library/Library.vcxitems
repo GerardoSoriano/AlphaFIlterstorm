@@ -17,6 +17,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)AverageFilter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)DirectionalEastFilter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)DirectionalNorthFilter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)DisplacementHistogramFilter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)EqualizationHistogramFilter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ExponentialEqualizationHistogramFilter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Filter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)FilterFactory.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GaussianFilter.h" />
@@ -33,14 +36,19 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)NormalizeHistogramFilter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Picture.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SepiaFilter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)SimpleEqualizationHistogramFilter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SobelFilter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)UmbralFilter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)UniformEqualizationHistogramFilter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)WeightedMedianFilter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)AverageFilter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DirectionalEastFilter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DirectionalNorthFilter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)DisplacementHistogramFilter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)EqualizationHistogramFilter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ExponentialEqualizationHistogramFilter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Filter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)FilterFactory.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GaussianFilter.cpp" />
@@ -57,8 +65,10 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)NormalizeHistogramFilter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Picture.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SepiaFilter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)SimpleEqualizationHistogramFilter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SobelFilter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)UmbralFilter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)UniformEqualizationHistogramFilter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)WeightedMedianFilter.cpp" />
   </ItemGroup>
 </Project>

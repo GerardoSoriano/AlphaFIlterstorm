@@ -16,6 +16,11 @@
 #include "NormalizeHistogramFilter.h"
 #include "UmbralFilter.h"
 #include "HighlightFilter.h"
+#include "SimpleEqualizationHistogramFilter.h"
+#include "EqualizationHistogramFilter.h"
+#include "UniformEqualizationHistogramFilter.h"
+#include "ExponentialEqualizationHistogramFilter.h"
+#include "DisplacementHistogramFilter.h"
 
 
 FilterFactory::FilterFactory()
@@ -69,6 +74,18 @@ Filter* FilterFactory::createFilter() const
 		return new SobelFilter();
 	case _Gaussian:
 		return new GaussianFilter();
+	case _NormalizeHistogram:
+		return new NormalizeHistogramFilter();
+	case _EqualizationHistogram:
+		return new EqualizationHistogramFilter();
+	case _SimpleEqualizationHistogram:
+		return new SimpleEqualizationHistogramFilter();
+	case _UniformEqualizationHistogram:
+		return new UniformEqualizationHistogramFilter();
+	case _ExponentialEqualizationHistogram:
+		return new ExponentialEqualizationHistogramFilter();
+	case _DisplacementHistogram:
+		return new DisplacementHistogramFilter();
 	case _Umbral:
 		return new UmbralFilter();
 	case _Highlight:
