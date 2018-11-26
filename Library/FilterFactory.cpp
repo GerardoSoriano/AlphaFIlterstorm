@@ -14,6 +14,8 @@
 #include "SepiaFilter.h"
 #include "GaussianFilter.h"
 #include "NormalizeHistogramFilter.h"
+#include "UmbralFilter.h"
+#include "HighlightFilter.h"
 
 
 FilterFactory::FilterFactory()
@@ -67,8 +69,10 @@ Filter* FilterFactory::createFilter() const
 		return new SobelFilter();
 	case _Gaussian:
 		return new GaussianFilter();
-	case _NormalizeHistogram:
-		return new NormalizeHistogramFilter();
+	case _Umbral:
+		return new UmbralFilter();
+	case _Highlight:
+		return new HighlightFilter();
 	default:
 		return nullptr;
 	}

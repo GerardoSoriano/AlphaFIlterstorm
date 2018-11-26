@@ -2,6 +2,7 @@
 
 #include <windows.h>
 #include <opencv2/core/mat.hpp>
+#include "Histogram.h"
 using namespace cv;
 using namespace std;
 
@@ -14,17 +15,16 @@ class Picture
 {
 public:
 	Mat image;
+	Histogram histB, histG, histR;
 	int rows, cols;
-	int *b_colors, *g_colors, *r_colors;
 	Picture();
 	Picture(Mat _image);
 	Picture(string path);
-	void fill_array_colors();
 	void open();
 	void close();
 	void save();
 	void restore();
 	Mat getHistogram(uint histSizeX, uint histSizeY, uint channel);
-	void resize(uint width);
+	Mat GetSquareImage(HWND canvas);
 	static bool adaptControl(HWND hwnd, string name);
 };

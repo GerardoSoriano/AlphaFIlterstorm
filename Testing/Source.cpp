@@ -18,6 +18,10 @@ using namespace cv;
 
 int main()
 {
+	Mat pict = imread(R"(C:\Users\gerar\OneDrive\Imágenes\kidface.jpg)");
+	Histogram hist = Histogram();
+	hist.create_histogram(pict, 0);
+
 	Picture *pic = new Picture(R"(C:\Users\gerar\OneDrive\Imágenes\kidface.jpg)");
 	if (pic->image.empty())
 	{
@@ -25,7 +29,7 @@ int main()
 		return -1;
 	}
 	FilterFactory ff = FilterFactory::get_instance();
-	ff.change_choise(_Gaussian);
+	ff.change_choise(_Highlight);
 	Filter *f = ff.createFilter();
 	f->set_image(pic->image);
 	f->apply();
@@ -40,12 +44,12 @@ int main()
 	namedWindow("Test02");
 	imshow("Test02", result->image);
 
-	dynamic_cast<GaussianFilter*>(f)->modify(3, 1.5);
+	/*dynamic_cast<GaussianFilter*>(f)->modify(3, 1.5);
 	f->apply();
 	result = f->get_result_image();
 	
 	namedWindow("Test03");
-	imshow("Test03", result->image);
+	imshow("Test03", result->image);*/
 
 	waitKey(0);
 	return 1;

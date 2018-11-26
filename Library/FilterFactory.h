@@ -16,7 +16,8 @@ const enum FilterList{
 	_Sepia,
 	_Sobel,
 	_Gaussian,
-	_NormalizeHistogram
+	_Umbral,
+	_Highlight
 };
 
 class FilterFactory

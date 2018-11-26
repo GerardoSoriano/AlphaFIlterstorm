@@ -23,6 +23,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)GrayscaleAverageFilter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GrayscaleLuminanceFilter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GrayscaleLuminosityFilter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)HighlightFilter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Histogram.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)HistogramElement.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)LaplacianFilter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MedianFilter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MinusLaplacianFilter.h" />
@@ -31,6 +34,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Picture.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SepiaFilter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SobelFilter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)UmbralFilter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)WeightedMedianFilter.h" />
   </ItemGroup>
   <ItemGroup>
@@ -43,6 +47,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)GrayscaleAverageFilter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GrayscaleLuminanceFilter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GrayscaleLuminosityFilter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)HighlightFilter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Histogram.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)HistogramElement.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)LaplacianFilter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MedianFilter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MinusLaplacianFilter.cpp" />
@@ -51,6 +58,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Picture.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SepiaFilter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SobelFilter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)UmbralFilter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)WeightedMedianFilter.cpp" />
   </ItemGroup>
 </Project>

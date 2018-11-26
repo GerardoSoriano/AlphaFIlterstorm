@@ -53,6 +53,18 @@
       <Filter>GaussianFilter</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)NormalizeHistogramFilter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)UmbralFilter.cpp">
+      <Filter>UmbralFilter</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)HighlightFilter.cpp">
+      <Filter>HighlightFilter</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Histogram.cpp">
+      <Filter>Histogram</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)HistogramElement.cpp">
+      <Filter>HistogramElement</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Filter.h">
@@ -107,6 +119,18 @@
       <Filter>GaussianFilter</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)NormalizeHistogramFilter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)UmbralFilter.h">
+      <Filter>UmbralFilter</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)HighlightFilter.h">
+      <Filter>HighlightFilter</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Histogram.h">
+      <Filter>Histogram</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)HistogramElement.h">
+      <Filter>HistogramElement</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="FIlter">
@@ -159,6 +183,18 @@
     </Filter>
     <Filter Include="GaussianFilter">
       <UniqueIdentifier>{00cb01d4-ae6c-4811-b27a-c55401589112}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HighlightFilter">
+      <UniqueIdentifier>{98a24821-b881-4007-95c7-f991267d9318}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UmbralFilter">
+      <UniqueIdentifier>{38ffbc02-1ae5-4771-a5f8-1bf5f61eb82d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Histogram">
+      <UniqueIdentifier>{7fe154af-117d-4736-b4e4-f0037f51b46b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HistogramElement">
+      <UniqueIdentifier>{bc01c6b1-d226-4037-85ea-195a93c38030}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
