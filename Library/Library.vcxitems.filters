@@ -52,7 +52,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)GaussianFilter.cpp">
       <Filter>GaussianFilter</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)NormalizeHistogramFilter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)UmbralFilter.cpp">
       <Filter>UmbralFilter</Filter>
     </ClCompile>
@@ -65,11 +64,24 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)HistogramElement.cpp">
       <Filter>HistogramElement</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)SimpleEqualizationHistogramFilter.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)EqualizationHistogramFilter.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)UniformEqualizationHistogramFilter.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)ExponentialEqualizationHistogramFilter.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)DisplacementHistogramFilter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)DisplacementHistogramFilter.cpp">
+      <Filter>DisplacementHistogramFilter</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)EqualizationHistogramFilter.cpp">
+      <Filter>EqualizationHistogramFilter</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ExponentialEqualizationHistogramFilter.cpp">
+      <Filter>ExponentialEqualizationHistogramFilter</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)NormalizeHistogramFilter.cpp">
+      <Filter>NormalizeHistogramFilter</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)SimpleEqualizationHistogramFilter.cpp">
+      <Filter>SimpleEqualizationHistogramFilter</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)UniformEqualizationHistogramFilter.cpp">
+      <Filter>UniformEqualizationHistogramFilter</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Filter.h">
@@ -123,7 +135,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)GaussianFilter.h">
       <Filter>GaussianFilter</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)NormalizeHistogramFilter.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)UmbralFilter.h">
       <Filter>UmbralFilter</Filter>
     </ClInclude>
@@ -136,11 +147,24 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)HistogramElement.h">
       <Filter>HistogramElement</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)SimpleEqualizationHistogramFilter.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)EqualizationHistogramFilter.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)UniformEqualizationHistogramFilter.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)ExponentialEqualizationHistogramFilter.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)DisplacementHistogramFilter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)DisplacementHistogramFilter.h">
+      <Filter>DisplacementHistogramFilter</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)EqualizationHistogramFilter.h">
+      <Filter>EqualizationHistogramFilter</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ExponentialEqualizationHistogramFilter.h">
+      <Filter>ExponentialEqualizationHistogramFilter</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)NormalizeHistogramFilter.h">
+      <Filter>NormalizeHistogramFilter</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)SimpleEqualizationHistogramFilter.h">
+      <Filter>SimpleEqualizationHistogramFilter</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)UniformEqualizationHistogramFilter.h">
+      <Filter>UniformEqualizationHistogramFilter</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="FIlter">
@@ -205,6 +229,24 @@
     </Filter>
     <Filter Include="HistogramElement">
       <UniqueIdentifier>{bc01c6b1-d226-4037-85ea-195a93c38030}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DisplacementHistogramFilter">
+      <UniqueIdentifier>{b848bb9f-e131-46c3-80bc-b1f16a3a76da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EqualizationHistogramFilter">
+      <UniqueIdentifier>{8775e3e4-04c5-4c9d-bb75-66c7cd5807cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ExponentialEqualizationHistogramFilter">
+      <UniqueIdentifier>{8e4ed5ee-3d7c-4fa4-a19a-d735bfed2c32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NormalizeHistogramFilter">
+      <UniqueIdentifier>{8d77cf09-8b04-4a84-863e-8546ebbd29b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SimpleEqualizationHistogramFilter">
+      <UniqueIdentifier>{7c9b48e6-d082-4293-a6eb-5798da4f371f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UniformEqualizationHistogramFilter">
+      <UniqueIdentifier>{10fdf6d2-6cc3-4818-8fea-fd429a5f1acb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

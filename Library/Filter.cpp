@@ -1,19 +1,18 @@
 #include "Filter.h"
 
-
-
-Filter::Filter() : base(nullptr), result(nullptr), substractor(1) {};
-
+Filter::Filter() : need_hist(false), substractor(1), base(nullptr), result(nullptr)
+{
+};
 
 Filter::~Filter()
 {
 	delete base, result;
 }
+
 const wchar_t * Filter::get_name()
 {
 	return nullptr;
-}
-;
+};
 
 void Filter::apply()
 {
@@ -35,20 +34,26 @@ void Filter::set_image(string _path)
 {
 	this->base = new Picture(_path);
 	this->result = new Picture(_path);
+
+	if (need_hist)
+		base->make_rgb_histogram();
 }
 
 void Filter::set_image(Mat _img)
 {
 	this->base = new Picture(_img);
 	this->result = new Picture(_img);
+
+	if (need_hist)
+		base->make_rgb_histogram();
 }
 
-Picture * Filter::get_base_image()
+Picture * Filter::get_base_image() const
 {
 	return this->base;
 }
 
-Picture * Filter::get_result_image()
+Picture * Filter::get_result_image() const
 {
 	return this->result;
 }

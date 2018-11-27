@@ -38,9 +38,7 @@ DisplacementHistogramFilter::DisplacementHistogramFilter() : Filter(), displacem
 }
 
 
-DisplacementHistogramFilter::~DisplacementHistogramFilter()
-{
-}
+DisplacementHistogramFilter::~DisplacementHistogramFilter() = default;
 
 const wchar_t * DisplacementHistogramFilter::get_name()
 {

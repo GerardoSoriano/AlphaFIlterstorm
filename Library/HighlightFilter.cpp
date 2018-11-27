@@ -30,3 +30,15 @@ const wchar_t* HighlightFilter::get_name()
 {
 	return TEXT("Filtro de realce");
 }
+
+void HighlightFilter::reset()
+{
+	modify(30);
+}
+
+void HighlightFilter::modify(int _highlight)
+{
+	delete result;
+	highlight = _highlight;
+	result = new Picture(base->image);
+}

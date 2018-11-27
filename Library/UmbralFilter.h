@@ -10,5 +10,7 @@ public:
 	UmbralFilter();
 	~UmbralFilter();
 	const wchar_t* get_name() override;
+	void reset();
+	void modify(int, int);
 };
 

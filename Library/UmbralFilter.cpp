@@ -32,3 +32,22 @@ const wchar_t* UmbralFilter::get_name()
 {
 	return TEXT("Filtro del umbral");
 }
+
+void UmbralFilter::reset()
+{
+	modify(40, 190);
+}
+
+void UmbralFilter::modify(int _first_umbral, int _last_umbral)
+{
+	delete result;
+	_last_umbral = (_last_umbral <= _first_umbral) ? _first_umbral + 1 : _last_umbral;
+	_first_umbral = (_first_umbral > 255) ? 255 : _first_umbral;
+	_first_umbral = (_first_umbral < 0) ? 0 : _first_umbral;
+	_last_umbral = (_last_umbral > 255) ? 255 : _last_umbral;
+	_last_umbral = (_last_umbral < 0) ? 0 : _last_umbral;
+	_first_umbral = (_first_umbral >= _last_umbral) ? _last_umbral - 1 : _first_umbral;
+	first_umbral = _first_umbral;
+	last_umbral = _last_umbral;
+	result = new Picture(base->image);
+}

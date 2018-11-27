@@ -25,7 +25,7 @@ int main()
 		return -1;
 	}
 	FilterFactory ff = FilterFactory::get_instance();
-	ff.change_choise(_DisplacementHistogram);
+	ff.change_choise(_NormalizeHistogram);
 	Filter *f = ff.createFilter();
 	f->set_image(pic->image);
 	f->apply();

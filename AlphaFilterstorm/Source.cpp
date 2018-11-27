@@ -3,12 +3,29 @@
 #include <fstream>
 #include <minwinbase.h>
 #include <winuser.h>
+#include <CommCtrl.h>
 #include <string>
+#include <tchar.h>
 #include <opencv2/core/core.hpp>
 #include <opencv2/video/background_segm.hpp>
 #include <opencv2/opencv.hpp>
 #include "Picture.h"
 #include "FilterFactory.h"
+#include "MedianFilter.h"
+#include "WeightedMedianFilter.h"
+#include "MinusMedianFilter.h"
+#include "AverageFilter.h"
+#include "LaplacianFilter.h"
+#include "MinusLaplacianFilter.h"
+#include "DirectionalNorthFilter.h"
+#include "DirectionalEastFilter.h"
+#include "GrayscaleLuminanceFilter.h"
+#include "SobelFilter.h"
+#include "GaussianFilter.h"
+#include "ExponentialEqualizationHistogramFilter.h"
+#include "HighlightFilter.h"
+#include "DisplacementHistogramFilter.h"
+#include "UmbralFilter.h"
 using namespace std;
 using namespace cv;
 
@@ -29,24 +46,24 @@ int id_helper = -1;
 int how_to_correct = -1;
 bool imageIsSaved = false;
 vector <Mat> clip;
-
 struct Record
 {
-	Record *before, *after;
 	FilterList type;
 	Filter *filter;
-}*index = nullptr, *aux = nullptr, *helper = nullptr;
+};
+vector <Record> list;
+bool is_video = false;
 
 BOOL CALLBACK DialogProcedure(HWND, UINT, WPARAM, LPARAM);
 BOOL CALLBACK FiltersProcedure(HWND, UINT, WPARAM, LPARAM);
+BOOL CALLBACK ModifyProcedure(HWND, UINT, WPARAM, LPARAM);
 DWORD WINAPI cameraFilter(LPVOID);
 DWORD WINAPI cameraHOG(LPVOID);
 void add_filter(FilterList);
-void correct_all_filters(Record*&);
+void correct_all_filters();
 void save_image(OPENFILENAME&);
-void clear_linked_list();
 Picture* apply_all_filters();
-float randRange(float, float);
+float rand_range(float, float);
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdParam, int nCmdShow)
 {
@@ -98,11 +115,12 @@ BOOL CALLBACK DialogProcedure(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		switch (LOWORD(wParam))
 		{
 		case ID_IMAGEN_ABRIR:
-			if(helper != nullptr && !imageIsSaved)
+			if(list.size() != 0 && !imageIsSaved)
 				wantToSave = (MessageBox(NULL, L"¿Seguro que deseas continuar sin guardar?", L"Alerta", MB_YESNO | MB_ICONWARNING) == IDYES) ? false : true;
 
 			if(imageIsSaved || !wantToSave)
 			{
+				is_video = false;
 				gbStopEvent = true;
 				WaitForSingleObject(hCamera, INFINITE);
 				CloseHandle(hCamera);
@@ -153,8 +171,8 @@ BOOL CALLBACK DialogProcedure(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 					EnableWindow(GetDlgItem(hwnd, BTN_ADD), true);
 					imageIsSaved = false;
 
-					filter_count = -1;
-					clear_linked_list();
+					filter_count = 0;
+					list.erase(list.begin(), list.end());
 					SendMessage(GetDlgItem(procHwnd, LB_RECORD), LB_RESETCONTENT, 0, 0);
 				}
 			}
@@ -165,14 +183,15 @@ BOOL CALLBACK DialogProcedure(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			save_image(ofn);
 			break;
 		case ID_VIDEO_TOMAR:
-			if (helper != nullptr && !imageIsSaved)
+			if (list.size() != 0 && !imageIsSaved)
 				wantToSave = (MessageBox(NULL, L"¿Seguro que deseas continuar sin guardar?", L"Alerta", MB_YESNO | MB_ICONWARNING) == IDYES) ? false : true;
 
 			if (imageIsSaved || !wantToSave)
 			{
+				is_video = true;
 				gbStopEvent = false;
-				filter_count = -1;
-				clear_linked_list();
+				filter_count = 0;
+				list.erase(list.begin(), list.end());
 				SendMessage(GetDlgItem(procHwnd, LB_RECORD), LB_RESETCONTENT, 0, 0);
 
 				DWORD cameraThread;
@@ -185,14 +204,15 @@ BOOL CALLBACK DialogProcedure(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			}
 			break;
 		case ID_VIDEO_HOG:
-			if (helper != nullptr && !imageIsSaved)
+			if (list.size() != 0 && !imageIsSaved)
 				wantToSave = (MessageBox(NULL, L"¿Seguro que deseas continuar sin guardar?", L"Alerta", MB_YESNO | MB_ICONWARNING) == IDYES) ? false : true;
 
 			if (imageIsSaved || !wantToSave)
 			{
+				is_video = true;
 				gbStopEvent = false;
-				filter_count = -1;
-				clear_linked_list();
+				filter_count = 0;
+				list.erase(list.begin(), list.end());
 				SendMessage(GetDlgItem(procHwnd, LB_RECORD), LB_RESETCONTENT, 0, 0);
 
 				DWORD cameraThread;
@@ -227,38 +247,32 @@ BOOL CALLBACK DialogProcedure(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		case BTN_ADD:
 			DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_FILTERS), hwnd, (DLGPROC)FiltersProcedure);
 			break;
+		case BTN_EDIT:
+			{
+				if (id_helper == 0)
+					how_to_correct = CORRECT_FROM_START;
+				else if (id_helper == list.size() - 1)
+					how_to_correct = CORRECT_FROM_END;
+				else
+					how_to_correct = CORRECT_FROM_CENTER;
+
+				DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_MODIFY), hwnd, (DLGPROC)ModifyProcedure);
+			}
+			break;
 		case BTN_DELETE:
 			{
-				Record *second_aux;
-				Record *to_delete = second_aux = aux;
-				if(aux == index)
-				{
-					aux = aux->after->after;
-					index = second_aux = aux->before;
-					index->before = nullptr;
-					to_delete->after = nullptr;
+				if(id_helper == 0)
 					how_to_correct = CORRECT_FROM_START;
-				}else if(aux == helper)
-				{
-					helper = aux = aux->before;
-					second_aux = aux->before;
-					helper->after = nullptr;
-					to_delete->before = nullptr;
+				else if(id_helper == list.size() - 1 )
 					how_to_correct = CORRECT_FROM_END;
-				}else
-				{
-					second_aux = to_delete->before;
-					aux = to_delete->after;
-					to_delete->before = nullptr;
-					to_delete->after = nullptr;
-					second_aux->after = aux;
-					aux->before = second_aux;
+				else
 					how_to_correct = CORRECT_FROM_CENTER;
-				}
-				delete to_delete;
-				correct_all_filters(second_aux);
+
 				SendMessage(GetDlgItem(hwnd, LB_RECORD), LB_DELETESTRING, id_helper, 0);
 				filter_count--;
+				list.erase(list.begin() + id_helper);
+				if(!is_video)
+					correct_all_filters();
 				EnableWindow(GetDlgItem(hwnd, BTN_DELETE), false);
 			}
 			break;
@@ -276,10 +290,8 @@ BOOL CALLBACK DialogProcedure(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 							break;
 						}
 					}
-					aux = index;
-					for (int i = 0; i < id_helper; i++)
-						aux = aux->after;
 					EnableWindow(GetDlgItem(hwnd, BTN_DELETE), true);
+					EnableWindow(GetDlgItem(hwnd, BTN_EDIT), true);
 				}
 				break;
 			}
@@ -349,6 +361,446 @@ BOOL CALLBACK FiltersProcedure(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
 		case BTN_GAUSSIAN:
 			add_filter(_Gaussian);
 			break;
+		case BTN_NORMALIZE_HISTOGRAM:
+			add_filter(_NormalizeHistogram);
+			break;
+		case BTN_EQUALIZATION_HISTOGRAM:
+			add_filter(_EqualizationHistogram);
+		case BTN_SIMPLE_EQUALIZATION_HISTOGRAM:
+			add_filter(_SimpleEqualizationHistogram);
+			break;
+		case BTN_UNIFORM_EQUALIZATION_HISTOGRAM:
+			add_filter(_UniformEqualizationHistogram);
+			break;
+		case BTN_EXPONENTIAL_EQUALIZATION_HISTOGRAM:
+			add_filter(_ExponentialEqualizationHistogram);
+			break;
+		case BTN_DISPLACEMENT_HISTOGRAM:
+			add_filter(_DisplacementHistogram);
+			break;
+		case BTN_UMBRAL:
+			add_filter(_Umbral);
+			break;
+		case BTN_HIGHLIGHT:
+			add_filter(_Highlight);
+			break;
+		}
+		break;
+	case WM_CLOSE:
+		EndDialog(hwnd, NULL);
+		break;
+	}
+	return FALSE;
+}
+
+BOOL CALLBACK ModifyProcedure(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(lParam);
+	switch (msg)
+	{
+	case WM_INITDIALOG:
+		SendMessage(GetDlgItem(hwnd, CMB_SIZE), CB_ADDSTRING, 0, (LPARAM)L"3 x 3");
+		SendMessage(GetDlgItem(hwnd, CMB_SIZE), CB_ADDSTRING, 0, (LPARAM)L"5 x 5");
+		SendMessage(GetDlgItem(hwnd, CMB_SIZE), CB_ADDSTRING, 0, (LPARAM)L"7 x 7");
+		SendMessage(GetDlgItem(hwnd, CMB_SIZE), CB_ADDSTRING, 0, (LPARAM)L"9 x 9");
+		SendMessage(GetDlgItem(hwnd, CMB_SIZE), CB_ADDSTRING, 0, (LPARAM)L"11 x 11");
+		SendMessage(GetDlgItem(hwnd, CMB_SIZE), CB_SETCURSEL, (WPARAM)0, (LPARAM)0);
+		switch (list[id_helper].type)
+		{
+		case _Median:
+			EnableWindow(GetDlgItem(hwnd, CMB_SIZE), true);
+			break;
+		case _WeightedMedian:
+			EnableWindow(GetDlgItem(hwnd, CMB_SIZE), true);
+			EnableWindow(GetDlgItem(hwnd, TXT_WEIGHT), true);
+			break;
+		case _MinusMedian:
+			EnableWindow(GetDlgItem(hwnd, CMB_SIZE), true);
+			break;
+		case _Average:
+			EnableWindow(GetDlgItem(hwnd, CMB_SIZE), true);
+			break;
+		case _Laplacian:
+			EnableWindow(GetDlgItem(hwnd, TXT_WEIGHT), true);
+			break;
+		case _MinusLaplacian:
+			EnableWindow(GetDlgItem(hwnd, TXT_WEIGHT), true);
+			break;
+		case _DirectionalNorth:
+			EnableWindow(GetDlgItem(hwnd, CMB_SIZE), true);
+			EnableWindow(GetDlgItem(hwnd, TXT_WEIGHT), true);
+			break;
+		case _DirectionalEast:
+			EnableWindow(GetDlgItem(hwnd, CMB_SIZE), true);
+			EnableWindow(GetDlgItem(hwnd, TXT_WEIGHT), true);
+			break;
+		case _GrayscaleLuminance:
+			EnableWindow(GetDlgItem(hwnd, CMB_SIZE), true);
+			break;
+		case _Sobel:
+			EnableWindow(GetDlgItem(hwnd, CMB_SIZE), true);
+			break;
+		case _Gaussian:
+			EnableWindow(GetDlgItem(hwnd, CMB_SIZE), true);
+			EnableWindow(GetDlgItem(hwnd, TXT_SIGMA), true);
+			break;
+		case _ExponentialEqualizationHistogram:
+			EnableWindow(GetDlgItem(hwnd, TXT_SIGMA), true);
+			break;
+		case _DisplacementHistogram:
+			EnableWindow(GetDlgItem(hwnd, SLD_DISPLACEMENT), true);
+			break;
+		case _Umbral:
+			EnableWindow(GetDlgItem(hwnd, TXT_FIRST_UMBRAL), true);
+			EnableWindow(GetDlgItem(hwnd, TXT_LAST_UMBRAL), true);
+			break;
+		case _Highlight:
+			EnableWindow(GetDlgItem(hwnd, TXT_HIGHLIGHT), true);
+			break;
+		default:
+			break;
+		}
+		return TRUE;
+	case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+		case BTN_OK:
+			switch (list[id_helper].type)
+			{
+			case _Median:
+				{
+					const int index_selected = SendMessage(GetDlgItem(hwnd, CMB_SIZE), CB_GETCURSEL, NULL, NULL);
+					switch (index_selected)
+					{
+					case 0:
+						dynamic_cast<MedianFilter*>(list[id_helper].filter)->modify(3);
+						break;
+					case 1:
+						dynamic_cast<MedianFilter*>(list[id_helper].filter)->modify(5);
+						break;
+					case 2:
+						dynamic_cast<MedianFilter*>(list[id_helper].filter)->modify(7);
+						break;
+					case 3:
+						dynamic_cast<MedianFilter*>(list[id_helper].filter)->modify(9);
+						break;
+					case 4:
+						dynamic_cast<MedianFilter*>(list[id_helper].filter)->modify(11);
+						break;
+					}
+				}
+				break;
+			case _WeightedMedian:
+				{
+					const int index_selected = SendMessage(GetDlgItem(hwnd, CMB_SIZE), CB_GETCURSEL, NULL, NULL);
+					TCHAR buff[1024];
+					GetWindowText(GetDlgItem(hwnd, TXT_WEIGHT), buff, 1024);
+					int number_text = _ttoi(buff);
+					switch (index_selected)
+					{
+					case 0:
+						dynamic_cast<WeightedMedianFilter*>(list[id_helper].filter)->modify(3, number_text);
+						break;
+					case 1:
+						dynamic_cast<WeightedMedianFilter*>(list[id_helper].filter)->modify(5, number_text);
+						break;
+					case 2:
+						dynamic_cast<WeightedMedianFilter*>(list[id_helper].filter)->modify(7, number_text);
+						break;
+					case 3:
+						dynamic_cast<WeightedMedianFilter*>(list[id_helper].filter)->modify(9, number_text);
+						break;
+					case 4:
+						dynamic_cast<WeightedMedianFilter*>(list[id_helper].filter)->modify(11, number_text);
+						break;
+					}
+				}
+				break;
+			case _MinusMedian:
+				{
+					const int index_selected = SendMessage(GetDlgItem(hwnd, CMB_SIZE), CB_GETCURSEL, NULL, NULL);
+					switch (index_selected)
+					{
+					case 0:
+						dynamic_cast<MinusMedianFilter*>(list[id_helper].filter)->modify(3);
+						break;
+					case 1:
+						dynamic_cast<MinusMedianFilter*>(list[id_helper].filter)->modify(5);
+						break;
+					case 2:
+						dynamic_cast<MinusMedianFilter*>(list[id_helper].filter)->modify(7);
+						break;
+					case 3:
+						dynamic_cast<MinusMedianFilter*>(list[id_helper].filter)->modify(9);
+						break;
+					case 4:
+						dynamic_cast<MinusMedianFilter*>(list[id_helper].filter)->modify(11);
+						break;
+					}
+				}
+				break;
+			case _Average:
+				{
+					const int index_selected = SendMessage(GetDlgItem(hwnd, CMB_SIZE), CB_GETCURSEL, NULL, NULL);
+					switch (index_selected)
+					{
+					case 0:
+						dynamic_cast<AverageFilter*>(list[id_helper].filter)->modify(3);
+						break;
+					case 1:
+						dynamic_cast<AverageFilter*>(list[id_helper].filter)->modify(5);
+						break;
+					case 2:
+						dynamic_cast<AverageFilter*>(list[id_helper].filter)->modify(7);
+						break;
+					case 3:
+						dynamic_cast<AverageFilter*>(list[id_helper].filter)->modify(9);
+						break;
+					case 4:
+						dynamic_cast<AverageFilter*>(list[id_helper].filter)->modify(11);
+						break;
+					}
+				}
+				break;
+			case _Laplacian:
+				{
+					TCHAR buff[1024];
+					GetWindowText(GetDlgItem(hwnd, TXT_WEIGHT), buff, 1024);
+					int number_text = _ttoi(buff);
+					dynamic_cast<LaplacianFilter*>(list[id_helper].filter)->modify(number_text);
+				}
+				break;
+			case _MinusLaplacian:
+				{
+					TCHAR buff[1024];
+					GetWindowText(GetDlgItem(hwnd, TXT_WEIGHT), buff, 1024);
+					int number_text = _ttoi(buff);
+					dynamic_cast<MinusLaplacianFilter*>(list[id_helper].filter)->modify(number_text);
+				}
+				break;
+			case _DirectionalNorth:
+				{
+					const int index_selected = SendMessage(GetDlgItem(hwnd, CMB_SIZE), CB_GETCURSEL, NULL, NULL);
+					TCHAR buff[1024];
+					GetWindowText(GetDlgItem(hwnd, TXT_WEIGHT), buff, 1024);
+					int number_text = _ttoi(buff);
+					switch (index_selected)
+					{
+					case 0:
+						dynamic_cast<DirectionalNorthFilter*>(list[id_helper].filter)->modify(3, number_text);
+						break;
+					case 1:
+						dynamic_cast<DirectionalNorthFilter*>(list[id_helper].filter)->modify(5, number_text);
+						break;
+					case 2:
+						dynamic_cast<DirectionalNorthFilter*>(list[id_helper].filter)->modify(7, number_text);
+						break;
+					case 3:
+						dynamic_cast<DirectionalNorthFilter*>(list[id_helper].filter)->modify(9, number_text);
+						break;
+					case 4:
+						dynamic_cast<DirectionalNorthFilter*>(list[id_helper].filter)->modify(11, number_text);
+						break;
+					}
+				}
+				break;
+			case _DirectionalEast:
+				{
+					const int index_selected = SendMessage(GetDlgItem(hwnd, CMB_SIZE), CB_GETCURSEL, NULL, NULL);
+					TCHAR buff[1024];
+					GetWindowText(GetDlgItem(hwnd, TXT_WEIGHT), buff, 1024);
+					int number_text = _ttoi(buff);
+					switch (index_selected)
+					{
+					case 0:
+						dynamic_cast<DirectionalEastFilter*>(list[id_helper].filter)->modify(3, number_text);
+						break;
+					case 1:
+						dynamic_cast<DirectionalEastFilter*>(list[id_helper].filter)->modify(5, number_text);
+						break;
+					case 2:
+						dynamic_cast<DirectionalEastFilter*>(list[id_helper].filter)->modify(7, number_text);
+						break;
+					case 3:
+						dynamic_cast<DirectionalEastFilter*>(list[id_helper].filter)->modify(9, number_text);
+						break;
+					case 4:
+						dynamic_cast<DirectionalEastFilter*>(list[id_helper].filter)->modify(11, number_text);
+						break;
+					}
+				}
+				break;
+			case _GrayscaleLuminance:
+				{
+					const int index_selected = SendMessage(GetDlgItem(hwnd, CMB_SIZE), CB_GETCURSEL, NULL, NULL);
+					switch (index_selected)
+					{
+					case 0:
+						dynamic_cast<GrayscaleLuminanceFilter*>(list[id_helper].filter)->modify(3);
+						break;
+					case 1:
+						dynamic_cast<GrayscaleLuminanceFilter*>(list[id_helper].filter)->modify(5);
+						break;
+					case 2:
+						dynamic_cast<GrayscaleLuminanceFilter*>(list[id_helper].filter)->modify(7);
+						break;
+					case 3:
+						dynamic_cast<GrayscaleLuminanceFilter*>(list[id_helper].filter)->modify(9);
+						break;
+					case 4:
+						dynamic_cast<GrayscaleLuminanceFilter*>(list[id_helper].filter)->modify(11);
+						break;
+					}
+				}
+				break;
+			case _Sobel:
+				{
+					const int index_selected = SendMessage(GetDlgItem(hwnd, CMB_SIZE), CB_GETCURSEL, NULL, NULL);
+					switch (index_selected)
+					{
+					case 0:
+						dynamic_cast<SobelFilter*>(list[id_helper].filter)->modify(3);
+						break;
+					case 1:
+						dynamic_cast<SobelFilter*>(list[id_helper].filter)->modify(5);
+						break;
+					case 2:
+						dynamic_cast<SobelFilter*>(list[id_helper].filter)->modify(7);
+						break;
+					case 3:
+						dynamic_cast<SobelFilter*>(list[id_helper].filter)->modify(9);
+						break;
+					case 4:
+						dynamic_cast<SobelFilter*>(list[id_helper].filter)->modify(11);
+						break;
+					}
+				}
+				break;
+			case _Gaussian:
+				{
+					const int index_selected = SendMessage(GetDlgItem(hwnd, CMB_SIZE), CB_GETCURSEL, NULL, NULL);
+					TCHAR buff[1024];
+					GetWindowText(GetDlgItem(hwnd, TXT_SIGMA), buff, 1024);
+					int number_text = _ttoi(buff);
+					switch (index_selected)
+					{
+					case 0:
+						dynamic_cast<GaussianFilter*>(list[id_helper].filter)->modify(3, number_text);
+						break;
+					case 1:
+						dynamic_cast<GaussianFilter*>(list[id_helper].filter)->modify(5, number_text);
+						break;
+					case 2:
+						dynamic_cast<GaussianFilter*>(list[id_helper].filter)->modify(7, number_text);
+						break;
+					case 3:
+						dynamic_cast<GaussianFilter*>(list[id_helper].filter)->modify(9, number_text);
+						break;
+					case 4:
+						dynamic_cast<GaussianFilter*>(list[id_helper].filter)->modify(11, number_text);
+						break;
+					}
+				}
+				break;
+			case _ExponentialEqualizationHistogram:
+				{
+					TCHAR buff[1024];
+					GetWindowText(GetDlgItem(hwnd, TXT_SIGMA), buff, 1024);
+					int number_text = _ttoi(buff);
+					dynamic_cast<ExponentialEqualizationHistogramFilter*>(list[id_helper].filter)->modify(number_text);
+				}
+				break;
+			case _DisplacementHistogram:
+				{
+					int slider_percent = SendMessage(GetDlgItem(hwnd, SLD_DISPLACEMENT), TBM_GETPOS, 0, 0);
+					slider_percent = slider_percent * 255 / 100;
+					dynamic_cast<DisplacementHistogramFilter*>(list[id_helper].filter)->modify(slider_percent);
+				}
+				break;
+			case _Umbral:
+				{
+					TCHAR buff_first[1024];
+					GetWindowText(GetDlgItem(hwnd, TXT_HIGHLIGHT), buff_first, 1024);
+					int first_umbral = _ttoi(buff_first);
+					TCHAR buff_last[1024];
+					GetWindowText(GetDlgItem(hwnd, TXT_HIGHLIGHT), buff_last, 1024);
+					int last_umbral = _ttoi(buff_last);
+					dynamic_cast<UmbralFilter*>(list[id_helper].filter)->modify(first_umbral, last_umbral);
+				}
+				break;
+			case _Highlight:
+				{
+					TCHAR buff[1024];
+					GetWindowText(GetDlgItem(hwnd, TXT_HIGHLIGHT), buff, 1024);
+					int number_text = _ttoi(buff);
+					dynamic_cast<HighlightFilter*>(list[id_helper].filter)->modify(number_text);
+				}
+				break;
+			default:
+				break;
+			}
+			if (!is_video)
+				correct_all_filters();
+			EndDialog(hwnd, NULL);
+			break;
+		case BTN_RESET:
+			switch (list[id_helper].type)
+			{
+			case _Median:
+				dynamic_cast<MedianFilter*>(list[id_helper].filter)->reset();
+				break;
+			case _WeightedMedian:
+				dynamic_cast<WeightedMedianFilter*>(list[id_helper].filter)->reset();
+				break;
+			case _MinusMedian:
+				dynamic_cast<MinusMedianFilter*>(list[id_helper].filter)->reset();
+				break;
+			case _Average:
+				dynamic_cast<AverageFilter*>(list[id_helper].filter)->reset();
+				break;
+			case _Laplacian:
+				dynamic_cast<LaplacianFilter*>(list[id_helper].filter)->reset();
+				break;
+			case _MinusLaplacian:
+				dynamic_cast<MinusLaplacianFilter*>(list[id_helper].filter)->reset();
+				break;
+			case _DirectionalNorth:
+				dynamic_cast<DirectionalNorthFilter*>(list[id_helper].filter)->reset();
+				break;
+			case _DirectionalEast:
+				dynamic_cast<DirectionalEastFilter*>(list[id_helper].filter)->reset();
+				break;
+			case _GrayscaleLuminance:
+				dynamic_cast<GrayscaleLuminanceFilter*>(list[id_helper].filter)->reset();
+				break;
+			case _Sobel:
+				dynamic_cast<SobelFilter*>(list[id_helper].filter)->reset();
+				break;
+			case _Gaussian:
+				dynamic_cast<GaussianFilter*>(list[id_helper].filter)->reset();
+				break;
+			case _ExponentialEqualizationHistogram:
+				dynamic_cast<ExponentialEqualizationHistogramFilter*>(list[id_helper].filter)->reset();
+				break;
+			case _DisplacementHistogram:
+				dynamic_cast<DisplacementHistogramFilter*>(list[id_helper].filter)->reset();
+				break;
+			case _Umbral:
+				dynamic_cast<UmbralFilter*>(list[id_helper].filter)->reset();
+				break;
+			case _Highlight:
+				dynamic_cast<HighlightFilter*>(list[id_helper].filter)->reset();
+				break;
+			default:
+				break;
+			}
+			if (!is_video)
+				correct_all_filters();
+			EndDialog(hwnd, NULL);
+			break;
+		case BTN_CANCEL:
+			EndDialog(hwnd, NULL);
+			break;
 		}
 		break;
 	case WM_CLOSE:
@@ -365,16 +817,19 @@ DWORD WINAPI cameraFilter(LPVOID lpParameter)
 	{
 		Mat frame;
 		bool exito = camara.read(frame);
+		Mat aux = Mat(frame.rows / 3, frame.cols / 3, CV_8U);
 		if(exito)
 		{
-			picture = new Picture(frame);
+			resize(frame, aux, aux.size(), 0, 0, INTER_LINEAR);
+			picture = new Picture(aux);
 			imshow("pic_image", picture->GetSquareImage(GetDlgItem(procHwnd, PIC_IMAGE)));
 			Picture *filter_frame = apply_all_filters();
 			if (filter_frame != nullptr)
+			{
 				imshow("pic_filter", filter_frame->GetSquareImage(GetDlgItem(procHwnd, PIC_FILTER)));
-
-			/*hist = picture->getHistogram(160, 132, currentChannel);
-			imshow("pic_histogram", hist);*/
+				hist = filter_frame->getHistogram(160, 132, currentChannel);
+				imshow("pic_histogram", hist);
+			}
 
 
 		}
@@ -390,7 +845,7 @@ DWORD WINAPI cameraHOG(LPVOID lpParameter)
 
 	srand(GetTickCount());
 	for (int i = 0; i < maxColorCount; i++) {
-		const Scalar color = Scalar(randRange(0, 255), randRange(0, 255), randRange(0, 255));
+		const Scalar color = Scalar(rand_range(0, 255), rand_range(0, 255), rand_range(0, 255));
 		colors.push_back(color);
 	}
 
@@ -459,72 +914,58 @@ DWORD WINAPI cameraHOG(LPVOID lpParameter)
 void add_filter(FilterList _filter)
 {
 	ff.change_choise(_filter);
-	if (index == nullptr)
+	list.push_back(Record());
+	if(filter_count == 0)
 	{
-		index = aux = helper = new Record();
-		index->before = nullptr;
-		index->after = nullptr;
-		index->type = _filter;
-		index->filter = ff.createFilter();
-		index->filter->set_image(picture->image);
-		index->filter->apply();
+		list[filter_count].type = _filter;
+		list[filter_count].filter = ff.createFilter();
+		list[filter_count].filter->set_image(picture->image);
+		list[filter_count].filter->apply();
 	}
 	else
 	{
-		aux = new Record();
-		aux->before = helper;
-		aux->after = nullptr;
-		helper->after = aux;
-		aux->type = _filter;
-		aux->filter = ff.createFilter();
-		Picture *prev = helper->filter->get_result_image();
-		aux->filter->set_image(prev->image);
-		aux->filter->apply();
-		helper = aux;
+		Picture *prev = list[filter_count - 1].filter->get_result_image();
+		list[filter_count].type = _filter;
+		list[filter_count].filter = ff.createFilter();
+		list[filter_count].filter->set_image(prev->image);
+		list[filter_count].filter->apply();
 	}
-	Picture *last = helper->filter->get_result_image();
-	Mat res = last->GetSquareImage(GetDlgItem(procHwnd, PIC_IMAGE));
+
+	Picture *last = list.back().filter->get_result_image();
+	const auto res = last->GetSquareImage(GetDlgItem(procHwnd, PIC_IMAGE));
 	imshow("pic_filter", res);
 
 	hist = last->getHistogram(160, 132, currentChannel);
 	imshow("pic_histogram", hist);
 
 	filter_count++;
-	const int index = static_cast<int>(SendMessage(GetDlgItem(procHwnd, LB_RECORD), LB_ADDSTRING, 0, reinterpret_cast<LPARAM>(helper->filter->get_name())));
+	const auto index = static_cast<int>(SendMessage(GetDlgItem(procHwnd, LB_RECORD), LB_ADDSTRING, 0, reinterpret_cast<LPARAM>(list.back().filter->get_name())));
 	SendMessage(GetDlgItem(procHwnd, LB_RECORD), LB_SETITEMDATA, index, static_cast<LPARAM>(filter_count));
 
 	EnableMenuItem(procHwndMenu, ID_IMAGEN_GUARDAR, MF_ENABLED);
 }
 
-void correct_all_filters(Record*& _second_aux)
+void correct_all_filters()
 {
 	while(1)
 	{
-		Picture *prev = _second_aux->filter->get_result_image();
 		if(how_to_correct == CORRECT_FROM_START)
 		{
-			aux->filter->set_image(picture->image);
-			aux->filter->apply();
+			list[id_helper].filter->set_image(picture->image);
+			list[id_helper].filter->apply();
 			how_to_correct = CORRECT_FROM_CENTER;
 		}
 		else if(how_to_correct == CORRECT_FROM_CENTER)
 		{
-			aux->filter->set_image(prev->image);
-			aux->filter->apply();
+			Picture *prev = list[id_helper - 1].filter->get_result_image();
+			list[id_helper].filter->set_image(prev->image);
+			list[id_helper].filter->apply();
 		}
-		if (aux == helper)
-		{
-			_second_aux = nullptr;
-			delete _second_aux;
+		id_helper++;
+		if (id_helper == list.size() || how_to_correct == CORRECT_FROM_END)
 			break;
-		}
-		else
-		{
-			aux = aux->after;
-			_second_aux = _second_aux->after;
-		}
 	}
-	Picture *last = helper->filter->get_result_image();
+	Picture *last = list[filter_count - 1].filter->get_result_image();
 	Mat res = last->GetSquareImage(GetDlgItem(procHwnd, PIC_IMAGE));
 	imshow("pic_filter", res);
 
@@ -550,69 +991,38 @@ void save_image(OPENFILENAME& _ofn)
 		char fileName[260];
 		char fileBuffer = ' ';
 		WideCharToMultiByte(CP_ACP, 0, path, -1, fileName, 260, &fileBuffer, NULL);
-		Picture *toSave = helper->filter->get_result_image();
+		Picture *toSave = list.back().filter->get_result_image();
 		imwrite(string(fileName), toSave->image);
 		imageIsSaved = true;
 	}
 }
 
-void clear_linked_list(){
-	if(index != nullptr)
-	{
-		bool stop = false;
-		aux = index;
-		index = nullptr;
-		helper = nullptr;
-		while (!stop)
-		{
-			Record* to_delete = aux;
-			aux = aux->after;
-			if (aux == nullptr)
-				stop = true;
-			else
-				aux->before = nullptr;
-			to_delete->after = nullptr;
-			delete to_delete;
-		}
-	}
-};
-
 Picture* apply_all_filters()
 {
-	if(index != nullptr)
+	if(filter_count != 0)
 	{
-		aux = index;
+		id_helper = 0;
 		while(1)
 		{
-			try
+			if (id_helper == 0)
 			{
-				if (aux == nullptr)
-					throw "no jalo";
-
-				if (aux == index)
-				{
-					aux->filter->set_image(picture->image);
-					aux->filter->apply();
-				}
-				else
-				{
-					aux->filter->set_image(aux->before->filter->get_result_image()->image);
-					aux->filter->apply();
-				}
-				if (aux == helper)
-					break;
-				aux = aux->after;
+				list[id_helper].filter->set_image(picture->image);
+				list[id_helper].filter->apply();
 			}
-			catch (char* error)
+			else
 			{
+				list[id_helper].filter->set_image(list[id_helper - 1].filter->get_result_image()->image);
+				list[id_helper].filter->apply();
+			}
+			id_helper++;
+			if (id_helper == list.size())
 				break;
-			}
 		}
-		return helper->filter->get_result_image();
+		return list.back().filter->get_result_image();
 	}
 	return nullptr;
 }
 
-float randRange(float min, float max) {
-	return ((float)rand() / (float)RAND_MAX) * max + (min);
+float rand_range(float _min, float _max) {
+	return (static_cast<float>(rand()) / static_cast<float>(RAND_MAX)) * _max + (_min);
 }

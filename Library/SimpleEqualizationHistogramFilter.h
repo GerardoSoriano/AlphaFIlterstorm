@@ -1,5 +1,6 @@
 #pragma once
 #include "Filter.h"
+
 class SimpleEqualizationHistogramFilter :
 	public Filter
 {

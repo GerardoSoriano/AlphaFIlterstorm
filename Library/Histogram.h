@@ -14,6 +14,5 @@ public:
 	Histogram();
 	~Histogram();
 	void create_histogram(Mat, int);
-	float histogram_porcentage(Histogram);
 	HistogramElement get_histogram_element_by_value(int);
 };

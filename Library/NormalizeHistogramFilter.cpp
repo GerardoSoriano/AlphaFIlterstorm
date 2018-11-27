@@ -22,15 +22,14 @@ void NormalizeHistogramFilter::bucle(uchar*& _input, uchar*& _output, uint _x, u
 	_output[_x * 3 + 2] = static_cast<int>(fr);
 }
 
-NormalizeHistogramFilter::NormalizeHistogramFilter()
+NormalizeHistogramFilter::NormalizeHistogramFilter(): Filter()
 {
+	need_hist = true;
 	substractor = 0;
 }
 
 
-NormalizeHistogramFilter::~NormalizeHistogramFilter()
-{
-}
+NormalizeHistogramFilter::~NormalizeHistogramFilter() = default;
 
 const wchar_t* NormalizeHistogramFilter::get_name()
 {

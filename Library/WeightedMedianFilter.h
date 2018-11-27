@@ -13,6 +13,6 @@ public:
 	~WeightedMedianFilter();
 	const wchar_t* get_name() override;
 	void reset();
-	void modify(int _msize, int _weight);
+	void modify(int, int);
 };
 

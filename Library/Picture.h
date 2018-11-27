@@ -18,13 +18,14 @@ public:
 	int rows, cols;
 	Histogram hist_b, hist_g, hist_r;
 	Picture();
-	Picture(Mat _image);
-	Picture(string path);
+	explicit Picture(Mat);
+	explicit Picture(string);
 	~Picture();
 	void open();
 	void close();
 	void save();
 	void restore();
+	void make_rgb_histogram();
 	Mat getHistogram(uint histSizeX, uint histSizeY, uint channel);
 	Mat GetSquareImage(HWND canvas);
 	static bool adaptControl(HWND hwnd, string name);

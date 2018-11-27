@@ -10,5 +10,7 @@ public:
 	HighlightFilter();
 	~HighlightFilter();
 	const wchar_t* get_name() override;
+	void reset();
+	void modify(int);
 };
 

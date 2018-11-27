@@ -1,7 +1,7 @@
 #include "Histogram.h"
 
 
-Histogram::Histogram()
+Histogram::Histogram(): total_pixels(0), lower_frecuency(0), higher_frecuency(0)
 {
 }
 
@@ -21,12 +21,11 @@ void Histogram::create_histogram(Mat _source, int _channel)
 			aux.push_back(p[j + _channel]);
 		}
 	}
+	sort(aux.begin(), aux.end());
 
-	std::sort(aux.begin(), aux.begin() + aux.size());
-
-	int last_value = -1;
-	int cdf = 0;
-	for (int i : aux){
+	auto last_value = -1;
+	auto cdf = 0;
+	for (auto i : aux){
 		cdf++;
 		if (i > last_value) {
 			last_value = i; 
@@ -50,26 +49,12 @@ void Histogram::create_histogram(Mat _source, int _channel)
 	higher_frecuency = data_aux.back().frequency;
 }
 
-float Histogram::histogram_porcentage(Histogram _hist)
-{
-	float result = 0;
-	vector<float> porcentajes;
-	for (auto i = 0; i < 256; i++) {
-		const float numerator = data_aux[i].frequency - _hist.data_aux[i].frequency;
-		const float denominator = data_aux[i].frequency + _hist.data_aux[i].frequency;
-		const auto res = (abs(numerator - denominator) <= 1.0) ? 0 : abs(numerator / denominator);
-		result = result + res;
-	}
-	result = result / 255.0;
-	result = 1 - result;
-	return result;
-}
-
 HistogramElement Histogram::get_histogram_element_by_value(int _val)
 {
-	for (int i = 0; i < data.size(); i++) {
-		if (data[i].value == _val) {
-			return data[i];
+	for (auto& i : data)
+	{
+		if (i.value == _val) {
+			return i;
 		}
 	}
 	return {};
