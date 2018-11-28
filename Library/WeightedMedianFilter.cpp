@@ -57,6 +57,10 @@ void WeightedMedianFilter::bucle(uchar*& _input, uchar*& _output, uint _x, uint 
 	_output[_x * 3 + 2] = sum_r;
 }
 
+void WeightedMedianFilter::computed_results()
+{
+}
+
 void WeightedMedianFilter::make_mask()
 {
 	mask = new int*[msize];

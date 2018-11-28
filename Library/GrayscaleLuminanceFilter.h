@@ -7,6 +7,7 @@ private:
 	int msize;
 	int** mask;
 	void bucle(uchar*&, uchar*&, uint, uint) override;
+	void computed_results() override;
 	void make_mask();
 	static int min_element(int[], int);
 	static void swap(int&, int&) noexcept;

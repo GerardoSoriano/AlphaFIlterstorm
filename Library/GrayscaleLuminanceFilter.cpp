@@ -27,6 +27,10 @@ void GrayscaleLuminanceFilter::bucle(uchar*& _input, uchar*& _output, uint _x, u
 	_output[_x * 3 + 2] = (mask[0][0] + mask[2][2]) / 2;
 }
 
+void GrayscaleLuminanceFilter::computed_results()
+{
+}
+
 void GrayscaleLuminanceFilter::make_mask()
 {
 	mask = new int*[msize];

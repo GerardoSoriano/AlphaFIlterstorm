@@ -25,14 +25,20 @@ const enum FilterList {
 	_Umbral,
 	_Highlight
 };
-
+struct Result
+{
+	int origin;
+	int result;
+};
 class Filter
 {
 protected:
+	vector<Result> results;
 	bool need_hist;
 	int substractor;
 	Picture *base, *result;
 	virtual void bucle(uchar*&, uchar*&, uint, uint) = 0;
+	virtual void computed_results() = 0;
 public:
 	Filter();
 	virtual ~Filter();

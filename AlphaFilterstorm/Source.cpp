@@ -32,11 +32,14 @@ using namespace cv;
 #define CORRECT_FROM_START 0
 #define CORRECT_FROM_CENTER 1
 #define CORRECT_FROM_END 2
+#define COMES_FROM_VIDEO 100
+#define COMES_FROM_DIRECT 200
+#define COMES_FROM_HOG 300
 
 HINSTANCE hInst;
 Picture *picture;
 Mat hist;
-bool gbStopEvent = false;
+bool gbStopEvent = true;
 uint currentChannel = CHANNEL_RGB;
 FilterFactory ff = FilterFactory::get_instance();
 HWND procHwnd;
@@ -45,7 +48,7 @@ int filter_count = 0;
 int id_helper = -1;
 int how_to_correct = -1;
 bool imageIsSaved = false;
-vector <Mat> clip;
+bool videoIsSaved = false;
 struct Record
 {
 	FilterList type;
@@ -53,15 +56,20 @@ struct Record
 };
 vector <Record> list;
 bool is_video = false;
+vector<Mat> clip;
+String videoPath;
+int from_where_comes = COMES_FROM_DIRECT;
 
 BOOL CALLBACK DialogProcedure(HWND, UINT, WPARAM, LPARAM);
 BOOL CALLBACK FiltersProcedure(HWND, UINT, WPARAM, LPARAM);
 BOOL CALLBACK ModifyProcedure(HWND, UINT, WPARAM, LPARAM);
+DWORD WINAPI loadedVideo(LPVOID);
 DWORD WINAPI cameraFilter(LPVOID);
 DWORD WINAPI cameraHOG(LPVOID);
 void add_filter(FilterList);
 void correct_all_filters();
 void save_image(OPENFILENAME&);
+void save_video(OPENFILENAME&);
 Picture* apply_all_filters();
 float rand_range(float, float);
 
@@ -169,6 +177,10 @@ BOOL CALLBACK DialogProcedure(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 					EnableWindow(GetDlgItem(hwnd, RD_GCHANNEL), true);
 					EnableWindow(GetDlgItem(hwnd, RD_BCHANNEL), true);
 					EnableWindow(GetDlgItem(hwnd, BTN_ADD), true);
+					EnableWindow(GetDlgItem(hwnd, BTN_EDIT), false);
+					EnableWindow(GetDlgItem(hwnd, BTN_DELETE), false);
+					EnableMenuItem(procHwndMenu, ID_IMAGEN_GUARDAR, MF_DISABLED);
+					EnableMenuItem(procHwndMenu, ID_VIDEO_GUARDAR, MF_DISABLED);
 					imageIsSaved = false;
 
 					filter_count = 0;
@@ -182,16 +194,85 @@ BOOL CALLBACK DialogProcedure(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		case ID_IMAGEN_GUARDAR:
 			save_image(ofn);
 			break;
+		case ID_VIDEO_ABRIR:
+			if (list.size() != 0 && !imageIsSaved)
+				wantToSave = (MessageBox(NULL, L"¿Seguro que deseas continuar sin guardar?", L"Alerta", MB_YESNO | MB_ICONWARNING) == IDYES) ? false : true;
+
+			if (imageIsSaved || !wantToSave)
+			{
+				ZeroMemory(&ofn, sizeof(ofn));
+				ofn.lStructSize = sizeof(ofn);
+				ofn.hwndOwner = hwnd;
+				ofn.lpstrFile = path;
+				ofn.lpstrFile[0] = '\0';
+				ofn.nMaxFile = sizeof(path);
+				ofn.lpstrFilter = L"MP4 Videos\0*.mp4\0"
+					"AVI Videos\0*.avi\0";
+				ofn.nFilterIndex = 1;
+				ofn.lpstrFileTitle = NULL;
+				ofn.nMaxFileTitle = 0;
+				ofn.lpstrInitialDir = NULL;
+				ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+				if (GetOpenFileName(&ofn) == TRUE)
+				{
+					char fileName[260];
+					char fileBuffer = ' ';
+					WideCharToMultiByte(CP_ACP, 0, path, -1, fileName, 260, &fileBuffer, NULL);
+					videoPath = String(fileName);
+					SetDlgItemText(hwnd, LBL_PATH, path);
+
+					if (!gbStopEvent)
+					{
+						gbStopEvent = true;
+						WaitForSingleObject(hCamera, INFINITE);
+						CloseHandle(hCamera);
+						clip.erase(clip.begin());
+						Sleep(3000);
+					}
+					is_video = true;
+					gbStopEvent = false;
+					if (filter_count > 0)
+					{
+						filter_count = 0;
+						list.erase(list.begin(), list.end());
+					}
+					SendMessage(GetDlgItem(procHwnd, LB_RECORD), LB_RESETCONTENT, 0, 0);
+
+					DWORD cameraThread;
+					hCamera = CreateThread(0, 0, loadedVideo, NULL, 0, &cameraThread);
+					EnableWindow(GetDlgItem(hwnd, RD_RGBCHANNEL), true);
+					EnableWindow(GetDlgItem(hwnd, RD_RCHANNEL), true);
+					EnableWindow(GetDlgItem(hwnd, RD_GCHANNEL), true);
+					EnableWindow(GetDlgItem(hwnd, RD_BCHANNEL), true);
+					EnableWindow(GetDlgItem(hwnd, BTN_ADD), true);
+					EnableWindow(GetDlgItem(hwnd, BTN_EDIT), false);
+					EnableWindow(GetDlgItem(hwnd, BTN_DELETE), false);
+					EnableMenuItem(procHwndMenu, ID_IMAGEN_GUARDAR, MF_DISABLED);
+					EnableMenuItem(procHwndMenu, ID_VIDEO_GUARDAR, MF_ENABLED);
+				}
+			}
+			break;
 		case ID_VIDEO_TOMAR:
 			if (list.size() != 0 && !imageIsSaved)
 				wantToSave = (MessageBox(NULL, L"¿Seguro que deseas continuar sin guardar?", L"Alerta", MB_YESNO | MB_ICONWARNING) == IDYES) ? false : true;
 
 			if (imageIsSaved || !wantToSave)
 			{
+				if (!gbStopEvent)
+				{
+					gbStopEvent = true;
+					WaitForSingleObject(hCamera, INFINITE);
+					CloseHandle(hCamera);
+					clip.erase(clip.begin());
+					Sleep(3000);
+				}
 				is_video = true;
 				gbStopEvent = false;
-				filter_count = 0;
-				list.erase(list.begin(), list.end());
+				if(filter_count > 0)
+				{
+					filter_count = 0;
+					list.erase(list.begin(), list.end());
+				}
 				SendMessage(GetDlgItem(procHwnd, LB_RECORD), LB_RESETCONTENT, 0, 0);
 
 				DWORD cameraThread;
@@ -201,6 +282,10 @@ BOOL CALLBACK DialogProcedure(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				EnableWindow(GetDlgItem(hwnd, RD_GCHANNEL), true);
 				EnableWindow(GetDlgItem(hwnd, RD_BCHANNEL), true);
 				EnableWindow(GetDlgItem(hwnd, BTN_ADD), true);
+				EnableWindow(GetDlgItem(hwnd, BTN_EDIT), false);
+				EnableWindow(GetDlgItem(hwnd, BTN_DELETE), false);
+				EnableMenuItem(procHwndMenu, ID_IMAGEN_GUARDAR, MF_DISABLED);
+				EnableMenuItem(procHwndMenu, ID_VIDEO_GUARDAR, MF_ENABLED);
 			}
 			break;
 		case ID_VIDEO_HOG:
@@ -209,10 +294,21 @@ BOOL CALLBACK DialogProcedure(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 			if (imageIsSaved || !wantToSave)
 			{
+				if(!gbStopEvent)
+				{
+					gbStopEvent = true;
+					WaitForSingleObject(hCamera, INFINITE);
+					CloseHandle(hCamera);
+					clip.erase(clip.begin());
+					Sleep(3000);
+				}
 				is_video = true;
 				gbStopEvent = false;
-				filter_count = 0;
-				list.erase(list.begin(), list.end());
+				if (filter_count > 0)
+				{
+					filter_count = 0;
+					list.erase(list.begin(), list.end());
+				}
 				SendMessage(GetDlgItem(procHwnd, LB_RECORD), LB_RESETCONTENT, 0, 0);
 
 				DWORD cameraThread;
@@ -222,7 +318,20 @@ BOOL CALLBACK DialogProcedure(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				EnableWindow(GetDlgItem(hwnd, RD_GCHANNEL), true);
 				EnableWindow(GetDlgItem(hwnd, RD_BCHANNEL), true);
 				EnableWindow(GetDlgItem(hwnd, BTN_ADD), false);
+				EnableWindow(GetDlgItem(hwnd, BTN_EDIT), false);
+				EnableWindow(GetDlgItem(hwnd, BTN_DELETE), false);
+				EnableMenuItem(procHwndMenu, ID_IMAGEN_GUARDAR, MF_DISABLED);
+				EnableMenuItem(procHwndMenu, ID_VIDEO_GUARDAR, MF_ENABLED);
 			}
+			break;
+		case ID_VIDEO_GUARDAR:
+			is_video = false;
+			gbStopEvent = true;
+			WaitForSingleObject(hCamera, INFINITE);
+			CloseHandle(hCamera);
+			save_video(ofn);
+			if(from_where_comes != COMES_FROM_VIDEO)
+				clip.erase(clip.begin());
 			break;
 		case RD_RGBCHANNEL:
 			currentChannel = CHANNEL_RGB;
@@ -290,8 +399,9 @@ BOOL CALLBACK DialogProcedure(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 							break;
 						}
 					}
+					if(!is_video)
+						EnableWindow(GetDlgItem(hwnd, BTN_EDIT), true);
 					EnableWindow(GetDlgItem(hwnd, BTN_DELETE), true);
-					EnableWindow(GetDlgItem(hwnd, BTN_EDIT), true);
 				}
 				break;
 			}
@@ -810,15 +920,28 @@ BOOL CALLBACK ModifyProcedure(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	return FALSE;
 }
 
-DWORD WINAPI cameraFilter(LPVOID lpParameter)
+DWORD WINAPI loadedVideo(LPVOID lpParameter)
 {
-	VideoCapture camara(0);
-	while(!gbStopEvent)
+	from_where_comes = COMES_FROM_VIDEO;
+	VideoCapture video(videoPath);
+	while (1)
 	{
 		Mat frame;
-		bool exito = camara.read(frame);
-		Mat aux = Mat(frame.rows / 3, frame.cols / 3, CV_8U);
-		if(exito)
+		video >> frame;
+		Mat aux = Mat(frame.rows / 3, frame.cols / 3, frame.type());
+		if (!frame.empty())
+		{
+			resize(frame, aux, aux.size(), 0, 0, INTER_LINEAR);
+			clip.push_back(aux);
+		}else
+			break;
+	}
+	while (!gbStopEvent)
+	{
+		Mat frame;
+		video >> frame;
+		Mat aux = Mat(frame.rows / 3, frame.cols / 3, frame.type());
+		if (!frame.empty())
 		{
 			resize(frame, aux, aux.size(), 0, 0, INTER_LINEAR);
 			picture = new Picture(aux);
@@ -830,8 +953,37 @@ DWORD WINAPI cameraFilter(LPVOID lpParameter)
 				hist = filter_frame->getHistogram(160, 132, currentChannel);
 				imshow("pic_histogram", hist);
 			}
+			waitKey(20);
+		}else
+		{
+			video.set(CV_CAP_PROP_POS_FRAMES, 0);
+		}
+	}
+	return 0;
+}
 
-
+DWORD WINAPI cameraFilter(LPVOID lpParameter)
+{
+	from_where_comes = COMES_FROM_DIRECT;
+	VideoCapture camara(0);
+	while(!gbStopEvent)
+	{
+		Mat frame;
+		bool exito = camara.read(frame);
+		Mat aux = Mat(frame.rows / 3, frame.cols / 3, CV_8U);
+		if(exito)
+		{
+			resize(frame, aux, aux.size(), 0, 0, INTER_LINEAR);
+			picture = new Picture(aux);
+			clip.push_back(picture->image);
+			imshow("pic_image", picture->GetSquareImage(GetDlgItem(procHwnd, PIC_IMAGE)));
+			Picture *filter_frame = apply_all_filters();
+			if (filter_frame != nullptr)
+			{
+				imshow("pic_filter", filter_frame->GetSquareImage(GetDlgItem(procHwnd, PIC_FILTER)));
+				hist = filter_frame->getHistogram(160, 132, currentChannel);
+				imshow("pic_histogram", hist);
+			}
 		}
 	}
 	return 0;
@@ -839,6 +991,7 @@ DWORD WINAPI cameraFilter(LPVOID lpParameter)
 
 DWORD WINAPI cameraHOG(LPVOID lpParameter)
 {
+	from_where_comes = COMES_FROM_HOG;
 	VideoCapture camara(0);
 	const int maxColorCount = 10;
 	vector<cv::Scalar> colors;
@@ -864,15 +1017,18 @@ DWORD WINAPI cameraHOG(LPVOID lpParameter)
 		bool exito = camara.read(frame);
 		if (exito)
 		{
-			picture = new Picture(frame);
+			resize(frame, aux, aux.size(), 0, 0, INTER_LINEAR);
+
+			picture = new Picture(aux);
 			imshow("pic_image", picture->GetSquareImage(GetDlgItem(procHwnd, PIC_IMAGE)));
-			Mat hist = picture->getHistogram(255, 255, currentChannel);
-			resize(picture->image, aux, aux.size(), 0, 0, INTER_LINEAR);
+			
 			cvtColor(aux, aux2, CV_BGR2GRAY);
 			vector<Rect> found, found_filtered;
+			
 			double t = (double)getTickCount();
 			hog.detectMultiScale(aux2, found, 0, Size(8, 8), Size(32, 32), 1.05, 2);
 			t = (double)getTickCount() - t;
+			
 			size_t i, j;
 			for (i = 0; i < found.size(); i++)
 			{
@@ -883,10 +1039,10 @@ DWORD WINAPI cameraHOG(LPVOID lpParameter)
 				if (j == found.size())
 					found_filtered.push_back(r);
 			}
-			string number = std::to_string(found_filtered.size());
+			string number = to_string(found_filtered.size());
 
 			putText(picture->image, number.c_str(), cvPoint(30, 50),
-				FONT_ITALIC, 3, cvScalar(255, 255, 255), 1, CV_AA);
+				FONT_ITALIC, 1, cvScalar(0, 255, 0), 2, CV_AA);
 
 			int colorsSize = colors.size();
 			for (i = 0; i < found_filtered.size(); i++)
@@ -903,6 +1059,7 @@ DWORD WINAPI cameraHOG(LPVOID lpParameter)
 			}
 			if (waitKey(10) >= 40)
 				break;
+			clip.push_back(picture->image);
 			imshow("pic_histogram", picture->getHistogram(160, 132, currentChannel));
 			imshow("pic_filter", picture->GetSquareImage(GetDlgItem(procHwnd, PIC_FILTER)));
 
@@ -942,35 +1099,46 @@ void add_filter(FilterList _filter)
 	const auto index = static_cast<int>(SendMessage(GetDlgItem(procHwnd, LB_RECORD), LB_ADDSTRING, 0, reinterpret_cast<LPARAM>(list.back().filter->get_name())));
 	SendMessage(GetDlgItem(procHwnd, LB_RECORD), LB_SETITEMDATA, index, static_cast<LPARAM>(filter_count));
 
-	EnableMenuItem(procHwndMenu, ID_IMAGEN_GUARDAR, MF_ENABLED);
+	if(is_video)
+		EnableMenuItem(procHwndMenu, ID_VIDEO_GUARDAR, MF_ENABLED);
+	else
+		EnableMenuItem(procHwndMenu, ID_IMAGEN_GUARDAR, MF_ENABLED);
 }
 
 void correct_all_filters()
 {
-	while(1)
+	if(filter_count > 0)
 	{
-		if(how_to_correct == CORRECT_FROM_START)
+		while (1)
 		{
-			list[id_helper].filter->set_image(picture->image);
-			list[id_helper].filter->apply();
-			how_to_correct = CORRECT_FROM_CENTER;
+			if (how_to_correct == CORRECT_FROM_START)
+			{
+				list[id_helper].filter->set_image(picture->image);
+				list[id_helper].filter->apply();
+				how_to_correct = CORRECT_FROM_CENTER;
+			}
+			else if (how_to_correct == CORRECT_FROM_CENTER)
+			{
+				Picture *prev = list[id_helper - 1].filter->get_result_image();
+				list[id_helper].filter->set_image(prev->image);
+				list[id_helper].filter->apply();
+			}
+			id_helper++;
+			if (id_helper == list.size() || how_to_correct == CORRECT_FROM_END)
+				break;
 		}
-		else if(how_to_correct == CORRECT_FROM_CENTER)
-		{
-			Picture *prev = list[id_helper - 1].filter->get_result_image();
-			list[id_helper].filter->set_image(prev->image);
-			list[id_helper].filter->apply();
-		}
-		id_helper++;
-		if (id_helper == list.size() || how_to_correct == CORRECT_FROM_END)
-			break;
-	}
-	Picture *last = list[filter_count - 1].filter->get_result_image();
-	Mat res = last->GetSquareImage(GetDlgItem(procHwnd, PIC_IMAGE));
-	imshow("pic_filter", res);
+		Picture *last = list[filter_count - 1].filter->get_result_image();
+		Mat res = last->GetSquareImage(GetDlgItem(procHwnd, PIC_IMAGE));
+		imshow("pic_filter", res);
 
-	hist = last->getHistogram(160, 132, currentChannel);
-	imshow("pic_histogram", hist);
+		hist = last->getHistogram(160, 132, currentChannel);
+		imshow("pic_histogram", hist);
+	}else
+	{
+		imshow("pic_filter", picture->GetSquareImage(GetDlgItem(procHwnd, PIC_FILTER)));
+		hist = picture->getHistogram(160, 132, currentChannel);
+		imshow("pic_histogram", hist);
+	}
 }
 
 void save_image(OPENFILENAME& _ofn)
@@ -997,30 +1165,78 @@ void save_image(OPENFILENAME& _ofn)
 	}
 }
 
+void save_video(OPENFILENAME& _ofn)
+{
+	WCHAR path[260];
+	ZeroMemory(&_ofn, sizeof(_ofn));
+	_ofn.lStructSize = sizeof(_ofn);
+	_ofn.hwndOwner = procHwnd;
+	_ofn.lpstrFile = path;
+	_ofn.lpstrFile[0] = '\0';
+	_ofn.nMaxFile = sizeof(path);
+	_ofn.lpstrFilter = L"MP4 Videos\0*.mp4\0"
+		"AVI Videos\0*.avi\0";
+	_ofn.lpstrDefExt = L"avi";
+	_ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+	if (GetSaveFileName(&_ofn) == TRUE)
+	{
+		EnableWindow(GetDlgItem(procHwnd, BTN_ADD), false);
+		char fileName[260];
+		char fileBuffer = ' ';
+		WideCharToMultiByte(CP_ACP, 0, path, -1, fileName, 260, &fileBuffer, NULL);
+		
+		VideoWriter to_save;
+		if (from_where_comes == COMES_FROM_VIDEO)
+		{
+			VideoCapture video(videoPath);
+			to_save.open(string(fileName), 1145656920, video.get(CAP_PROP_FPS), Size(clip[0].cols, clip[0].rows), true);
+		}
+		else
+			to_save.open(string(fileName), 1145656920, 16, Size(clip[0].cols, clip[0].rows), true);
+
+		if (to_save.isOpened())
+		{
+			for (int i = 0; i < clip.size(); i++)
+			{
+				picture = new Picture(clip[i]);
+				if (from_where_comes == COMES_FROM_HOG)
+					to_save << picture->image;
+				if (from_where_comes == COMES_FROM_DIRECT || from_where_comes == COMES_FROM_VIDEO)
+				{
+					Picture *filter_frame = apply_all_filters();
+					to_save << filter_frame->image;
+				}
+			}
+		}
+		to_save.release();
+		MessageBox(NULL, L"Video guardado correctamente", L"Información", MB_OK | MB_ICONINFORMATION);
+	}
+}
+
 Picture* apply_all_filters()
 {
 	if(filter_count != 0)
 	{
-		id_helper = 0;
+		int index = 0;
 		while(1)
 		{
-			if (id_helper == 0)
+			if (index == 0)
 			{
-				list[id_helper].filter->set_image(picture->image);
-				list[id_helper].filter->apply();
+				list[index].filter->set_image(picture->image);
+				list[index].filter->apply();
 			}
 			else
 			{
-				list[id_helper].filter->set_image(list[id_helper - 1].filter->get_result_image()->image);
-				list[id_helper].filter->apply();
+				list[index].filter->set_image(list[index - 1].filter->get_result_image()->image);
+				list[index].filter->apply();
 			}
-			id_helper++;
-			if (id_helper == list.size())
+			index++;
+			if (index == list.size())
 				break;
 		}
 		return list.back().filter->get_result_image();
 	}
-	return nullptr;
+	return picture;
 }
 
 float rand_range(float _min, float _max) {

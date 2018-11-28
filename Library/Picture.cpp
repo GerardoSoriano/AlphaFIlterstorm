@@ -23,17 +23,35 @@ void Picture::open()
 {
 }
 
-void Picture::make_rgb_histogram()
+void Picture::make_histogram()
 {
 	try
 	{
-		hist_b = Histogram();
-		hist_b.create_histogram(image, CHANNEL_B);
-		hist_g = Histogram();
-		hist_g.create_histogram(image, CHANNEL_G);
-		hist_r = Histogram();
-		hist_r.create_histogram(image, CHANNEL_R);
+		hist = Histogram();
+		hist.create_histogram(image, 0);
 	}catch(exception e){}
+}
+
+void Picture::convert_to_gray()
+{
+	auto copy = image.clone();
+	for (auto y = 0; y < image.rows; y++)
+	{
+		const auto input = copy.ptr<uchar>(y);
+		const auto output = image.ptr<uchar>(y);
+		for (auto x = 0; x < image.cols; x++)
+		{
+			const float b = input[x * 3];
+			const float g = input[x * 3 + 1];
+			const float r = input[x * 3 + 2];
+
+			const auto gray = (b + g + r) / 3;
+
+			output[x * 3] = static_cast<int>(gray);
+			output[x * 3 + 1] = static_cast<int>(gray);
+			output[x * 3 + 2] = static_cast<int>(gray);
+		}
+	}
 }
 
 Mat Picture::getHistogram(uint histSizeX, uint histSizeY, uint channel)

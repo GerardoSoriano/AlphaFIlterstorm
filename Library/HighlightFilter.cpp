@@ -16,6 +16,10 @@ void HighlightFilter::bucle(uchar*& _input, uchar*& _output, uint _x, uint _y)
 	_output[_x * 3 + 2] = static_cast<int>(grey);
 }
 
+void HighlightFilter::computed_results()
+{
+}
+
 HighlightFilter::HighlightFilter(): Filter(), highlight(30)
 {
 	substractor = 0;

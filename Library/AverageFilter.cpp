@@ -26,6 +26,10 @@ void AverageFilter::bucle(uchar*& _input, uchar*& _output, uint _x, uint _y)
 	_output[_x * 3 + 2] = arr_r[1][1];
 }
 
+void AverageFilter::computed_results()
+{
+}
+
 void AverageFilter::make_mask()
 {
 	arr_b = new int*[msize];

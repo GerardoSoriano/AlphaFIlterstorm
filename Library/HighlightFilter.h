@@ -6,6 +6,7 @@ class HighlightFilter :
 private:
 	int highlight;
 	void bucle(uchar*&, uchar*&, uint, uint) override;
+	void computed_results() override;
 public:
 	HighlightFilter();
 	~HighlightFilter();

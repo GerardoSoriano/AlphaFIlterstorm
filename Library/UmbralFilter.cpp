@@ -18,6 +18,10 @@ void UmbralFilter::bucle(uchar*& _input, uchar*& _output, uint _x, uint _y)
 	_output[_x * 3 + 2] = static_cast<int>(gray);
 }
 
+void UmbralFilter::computed_results()
+{
+}
+
 UmbralFilter::UmbralFilter(): Filter(), first_umbral(40), last_umbral(190)
 {
 	substractor = 0;

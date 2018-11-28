@@ -9,5 +9,6 @@ public:
 	EqualizationHistogramFilter();
 	~EqualizationHistogramFilter();
 	const wchar_t* get_name() override;
+	void computed_results() override;
 };
 

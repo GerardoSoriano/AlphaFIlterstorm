@@ -3,23 +3,31 @@
 
 void EqualizationHistogramFilter::bucle(uchar*& _input, uchar*& _output, uint _x, uint _y)
 {
-	_input = base->image.ptr<uchar>(_y);
+	float tone = _output[_x * 3];
 
-	const float b = _input[_x * 3];
-	const float g = _input[_x * 3 + 1];
-	const float r = _input[_x * 3 + 2];
+	for (auto& i : results)
+		if(i.origin == tone)
+		{
+			tone = i.result;
+			break;
+		}
 
-	const auto he_b = base->hist_b.get_histogram_element_by_value(b);
-	const auto he_g = base->hist_g.get_histogram_element_by_value(g);
-	const auto he_r = base->hist_r.get_histogram_element_by_value(r);
+	_output[_x * 3] = static_cast<int>(tone);
+	_output[_x * 3 + 1] = static_cast<int>(tone);
+	_output[_x * 3 + 2] = static_cast<int>(tone);
+}
 
-	const auto fb = (float(he_b.cdf) - float(base->hist_b.data[0].cdf)) / (float(base->hist_b.total_pixels) - float(base->hist_b.data[0].cdf)) * 255;
-	const auto fg = (float(he_g.cdf) - float(base->hist_g.data[0].cdf)) / (float(base->hist_g.total_pixels) - float(base->hist_g.data[0].cdf)) * 255;
-	const auto fr = (float(he_r.cdf) - float(base->hist_r.data[0].cdf)) / (float(base->hist_r.total_pixels) - float(base->hist_r.data[0].cdf)) * 255;
+void EqualizationHistogramFilter::computed_results()
+{
 
-	_output[_x * 3] = static_cast<int>(fb);
-	_output[_x * 3 + 1] = static_cast<int>(fg);
-	_output[_x * 3 + 2] = static_cast<int>(fr);
+	for (auto i = 0; i < result->hist.data.size(); i++)
+	{
+		results.emplace_back();
+		const auto he = result->hist.data[i];
+		const auto res = (he.cdf - result->hist.data[0].cdf) / (result->hist.total_pixels - result->hist.data[0].cdf) * 255;
+		results[i].origin = he.value;
+		results[i].result = res;
+	}
 }
 
 EqualizationHistogramFilter::EqualizationHistogramFilter(): Filter()

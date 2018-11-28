@@ -7,6 +7,7 @@ private:
 	int msize;
 	int **maskX, **maskY;
 	void bucle(uchar*&, uchar*&, uint, uint) override;
+	void computed_results() override;
 	void make_mask();
 public:
 	SobelFilter();

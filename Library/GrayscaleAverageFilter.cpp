@@ -17,6 +17,10 @@ void GrayscaleAverageFilter::bucle(uchar*& _input, uchar*& _output, uint _x, uin
 	_output[_x * 3 + 2] = static_cast<int>(gray);
 }
 
+void GrayscaleAverageFilter::computed_results()
+{
+}
+
 GrayscaleAverageFilter::GrayscaleAverageFilter()
 {
 	substractor = 0;

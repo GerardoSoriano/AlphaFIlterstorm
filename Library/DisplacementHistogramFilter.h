@@ -6,6 +6,7 @@ class DisplacementHistogramFilter :
 private:
 	int displacement;
 	void bucle(uchar*&, uchar*&, uint, uint) override;
+	virtual void computed_results();
 public:
 	DisplacementHistogramFilter();
 	~DisplacementHistogramFilter();

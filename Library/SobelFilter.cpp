@@ -37,6 +37,10 @@ void SobelFilter::bucle(uchar*& _input, uchar*& _output, uint _x, uint _y)
 	_output[_x * 3 + 2] = sum;
 }
 
+void SobelFilter::computed_results()
+{
+}
+
 void SobelFilter::make_mask()
 {
 	maskX = new int*[msize];

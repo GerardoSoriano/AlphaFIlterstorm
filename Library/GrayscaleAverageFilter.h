@@ -5,6 +5,7 @@ class GrayscaleAverageFilter :
 {
 private:
 	void bucle(uchar*&, uchar*&, uint, uint) override;
+	void computed_results() override;
 public:
 	GrayscaleAverageFilter();
 	~GrayscaleAverageFilter();

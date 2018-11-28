@@ -35,6 +35,10 @@ void DirectionalNorthFilter::bucle(uchar*& _input, uchar*& _output, uint _x, uin
 	_output[_x * 3 + 2] = sum;
 }
 
+void DirectionalNorthFilter::computed_results()
+{
+}
+
 void DirectionalNorthFilter::make_mask()
 {
 	mask = new int*[msize];

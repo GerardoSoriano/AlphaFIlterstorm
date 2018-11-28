@@ -60,6 +60,10 @@ void GaussianFilter::bucle(uchar*& _input, uchar*& _output, uint _x, uint _y)
 	_output[_x * 3 + 2] = sum_r;
 }
 
+void GaussianFilter::computed_results()
+{
+}
+
 void GaussianFilter::make_mask()
 {
 	float **pre = new float*[msize];

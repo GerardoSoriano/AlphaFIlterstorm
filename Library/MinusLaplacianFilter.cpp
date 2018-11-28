@@ -35,6 +35,10 @@ void MinusLaplacianFilter::bucle(uchar*& _input, uchar*& _output, uint _x, uint 
 	_output[_x * 3 + 2] = sum;
 }
 
+void MinusLaplacianFilter::computed_results()
+{
+}
+
 void MinusLaplacianFilter::make_mask()
 {
 	mask[0][0] = 0;			mask[0][1] = -weight;			mask[0][2] = 0;

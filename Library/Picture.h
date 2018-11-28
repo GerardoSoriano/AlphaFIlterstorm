@@ -16,7 +16,7 @@ class Picture
 public:
 	Mat image;
 	int rows, cols;
-	Histogram hist_b, hist_g, hist_r;
+	Histogram hist;
 	Picture();
 	explicit Picture(Mat);
 	explicit Picture(string);
@@ -25,7 +25,8 @@ public:
 	void close();
 	void save();
 	void restore();
-	void make_rgb_histogram();
+	void make_histogram();
+	void convert_to_gray();
 	Mat getHistogram(uint histSizeX, uint histSizeY, uint channel);
 	Mat GetSquareImage(HWND canvas);
 	static bool adaptControl(HWND hwnd, string name);

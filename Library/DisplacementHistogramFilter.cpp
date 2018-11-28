@@ -32,6 +32,10 @@ void DisplacementHistogramFilter::bucle(uchar*& _input, uchar*& _output, uint _x
 	_output[_x * 3 + 2] = static_cast<int>(r);
 }
 
+void DisplacementHistogramFilter::computed_results()
+{
+}
+
 DisplacementHistogramFilter::DisplacementHistogramFilter() : Filter(), displacement(50)
 {
 	substractor = 0;

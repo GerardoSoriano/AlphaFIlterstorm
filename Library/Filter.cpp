@@ -36,7 +36,11 @@ void Filter::set_image(string _path)
 	this->result = new Picture(_path);
 
 	if (need_hist)
-		base->make_rgb_histogram();
+	{
+		result->convert_to_gray();
+		result->make_histogram();
+		computed_results();
+	}
 }
 
 void Filter::set_image(Mat _img)
@@ -45,7 +49,11 @@ void Filter::set_image(Mat _img)
 	this->result = new Picture(_img);
 
 	if (need_hist)
-		base->make_rgb_histogram();
+	{
+		result->convert_to_gray();
+		result->make_histogram();
+		computed_results();
+	}
 }
 
 Picture * Filter::get_base_image() const

@@ -35,6 +35,10 @@ void DirectionalEastFilter::bucle(uchar*& _input, uchar*& _output, uint _x, uint
 	_output[_x * 3 + 2] = sum;
 }
 
+void DirectionalEastFilter::computed_results()
+{
+}
+
 void DirectionalEastFilter::make_mask()
 {
 	mask = new int*[msize];

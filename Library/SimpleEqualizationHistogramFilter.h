@@ -6,6 +6,7 @@ class SimpleEqualizationHistogramFilter :
 {
 private:
 	void bucle(uchar*&, uchar*&, uint, uint) override;
+	void computed_results() override;
 public:
 	SimpleEqualizationHistogramFilter();
 	~SimpleEqualizationHistogramFilter();

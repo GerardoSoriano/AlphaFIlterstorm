@@ -57,6 +57,10 @@ void MedianFilter::bucle(uchar*& _input, uchar*& _output, uint _x, uint _y)
 
 }
 
+void MedianFilter::computed_results()
+{
+}
+
 void MedianFilter::make_mask()
 {
 	mask = new int*[msize];

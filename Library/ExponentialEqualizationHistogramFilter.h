@@ -6,6 +6,7 @@ class ExponentialEqualizationHistogramFilter :
 private:
 	float alpha;
 	void bucle(uchar*&, uchar*&, uint, uint) override;
+	void computed_results() override;
 public:
 	ExponentialEqualizationHistogramFilter();
 	~ExponentialEqualizationHistogramFilter();

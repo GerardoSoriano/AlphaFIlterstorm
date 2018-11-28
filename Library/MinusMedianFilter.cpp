@@ -57,6 +57,10 @@ void MinusMedianFilter::bucle(uchar*& _input, uchar*& _output, uint _x, uint _y)
 	_output[_x * 3 + 2] = sum_r;
 }
 
+void MinusMedianFilter::computed_results()
+{
+}
+
 void MinusMedianFilter::make_mask()
 {
 	mask = new int*[msize];

@@ -32,6 +32,10 @@ void SepiaFilter::bucle(uchar*& _input, uchar*& _output, uint _x, uint _y)
 	_output[_x * 3 + 2] = static_cast<int>(fr);
 }
 
+void SepiaFilter::computed_results()
+{
+}
+
 SepiaFilter::SepiaFilter()
 {
 	substractor = 0;

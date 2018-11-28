@@ -16,6 +16,10 @@ void GrayscaleLuminosityFilter::bucle(uchar*& _input, uchar*& _output, uint _x, 
 	_output[_x * 3 + 2] = static_cast<int>(gray);
 }
 
+void GrayscaleLuminosityFilter::computed_results()
+{
+}
+
 GrayscaleLuminosityFilter::GrayscaleLuminosityFilter()
 {
 	substractor = 0;
